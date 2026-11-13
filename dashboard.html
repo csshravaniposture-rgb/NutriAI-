@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | NutriAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        /* =====================================================
+           SIDEBAR — SAME DESIGN AS OTHER NUTRIAI PAGES
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            width: 255px;
+            height: 100vh;
+
+            padding: 25px 17px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #123524 0%,
+                    #0a2419 55%,
+                    #071910 100%
+                );
+
+            border-right: 1px solid rgba(149, 213, 91, 0.12);
+
+            display: flex;
+            flex-direction: column;
+
+            z-index: 1000;
+
+            box-shadow:
+                10px 0 35px rgba(0, 0, 0, 0.12);
+        }
+
+
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 4px 10px 30px;
+        }
+
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+
+            background:
+                rgba(149, 213, 91, 0.12);
+
+            border:
+                1px solid rgba(149, 213, 91, 0.22);
+
+            box-shadow:
+                0 0 25px rgba(149, 213, 91, 0.08);
+        }
+
+
+        .brand-text h2 {
+            color: #a8e96b;
+
+            font-size: 22px;
+            font-weight: 700;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .brand-text h2 span {
+            color: #d8f6bd;
+        }
+
+
+        .brand-text small {
+            display: block;
+
+            margin-top: 2px;
+
+            color: #71927d;
+
+            font-size: 8px;
+            font-weight: 500;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .navigation {
+            flex: 1;
+        }
+
+
+        .nav-item {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+
+            text-decoration: none;
+
+            color: #9db3a4;
+
+            padding: 12px 13px;
+
+            margin: 4px 0;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+
+        .nav-item > span {
+            width: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+        }
+
+
+        .nav-item:hover {
+            color: #dff5d1;
+
+            background:
+                rgba(149, 213, 91, 0.08);
+
+            transform: translateX(3px);
+        }
+
+
+        .nav-item.active {
+            color: #b8ef82;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(149, 213, 91, 0.17),
+                    rgba(149, 213, 91, 0.05)
+                );
+
+            border:
+                1px solid rgba(149, 213, 91, 0.13);
+
+            box-shadow:
+                inset 3px 0 0 #95d55b,
+                0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+
+        /* =====================================================
+           SIDEBAR BOTTOM
+        ===================================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+
+        .mini-tip {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 11px;
+
+            padding: 14px;
+
+            margin-bottom: 12px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(149, 213, 91, 0.07);
+
+            border:
+                1px solid rgba(149, 213, 91, 0.10);
+        }
+
+
+        .tip-icon {
+            width: 30px;
+            height: 30px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(149, 213, 91, 0.10);
+
+            font-size: 15px;
+        }
+
+
+        .mini-tip strong {
+            display: block;
+
+            color: #c8eeb0;
+
+            font-size: 12px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .mini-tip p {
+            color: #718b7a;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .logout {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 13px;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            color: #8da397;
+
+            font-size: 14px;
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease;
+        }
+
+
+        .logout:hover {
+            color: #ff9b9b;
+
+            background:
+                rgba(255, 90, 90, 0.07);
+        }
+
+
+        .logout > span {
+            width: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+        }
+
+
+        /* =====================================================
+           MOBILE SIDEBAR
+        ===================================================== */
+
+        @media (max-width: 760px) {
+
+            .sidebar {
+                width: 75px;
+
+                padding: 20px 10px;
+            }
+
+
+            .brand {
+                justify-content: center;
+
+                padding:
+                    4px 0 25px;
+            }
+
+
+            .brand-text {
+                display: none;
+            }
+
+
+            .nav-item {
+                justify-content: center;
+
+                padding: 13px 8px;
+            }
+
+
+            .nav-item label {
+                display: none;
+            }
+
+
+            .nav-item.active {
+                box-shadow: none;
+            }
+
+
+            .mini-tip {
+                display: none;
+            }
+
+
+            .logout {
+                justify-content: center;
+
+                padding: 13px 8px;
+            }
+
+
+            .logout label {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    \
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🌿
+        </div>
+
+        <div class="brand-text">
+            <h2>Nutri<span>AI</span></h2>
+            <small>SMART NUTRITION</small>
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="{{ url_for('dashboard') }}" class="nav-item active">
+            <span>⌂</span>
+            <label>Dashboard</label>
+        </a>
+
+        <a href="{{ url_for('mealplanner') }}" class="nav-item">
+            <span>🍽</span>
+            <label>Meal Planner</label>
+        </a>
+
+        <a href="{{ url_for('nutrition') }}" class="nav-item">
+            <span>🥗</span>
+            <label>Nutrition</label>
+        </a>
+
+        <a href="{{ url_for('recipe') }}" class="nav-item">
+            <span>🤖</span>
+            <label>AI Recipes</label>
+        </a>
+
+        <a href="{{ url_for('grocery') }}" class="nav-item">
+            <span>🛒</span>
+            <label>Grocery</label>
+        </a>
+
+        <a href="{{ url_for('report') }}" class="nav-item">
+            <span>📊</span>
+            <label>My Report</label>
+        </a>
+
+        <a href="{{ url_for('profile') }}" class="nav-item">
+            <span>👤</span>
+            <label>Profile</label>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="mini-tip">
+
+            <div class="tip-icon">✨</div>
+
+            <div>
+                <strong>Daily Tip</strong>
+                <p>Stay hydrated and eat mindfully.</p>
+            </div>
+
+        </div>
+
+
+        <a href="{{ url_for('logout') }}" class="logout">
+
+            <span>↪</span>
+            <label>Logout</label>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+
+            <div class="mobile-brand">
+
+                🌿 Nutri<span>AI</span>
+
+            </div>
+
+
+            <div class="top-actions">
+
+
+                <div class="notification">
+
+                    🔔
+
+                    <span></span>
+
+                </div>
+
+
+                <a href="{{ url_for('profile') }}"
+                   class="profile-mini">
+
+
+                    <div class="avatar">
+
+                        {{ user.name[0]|upper }}
+
+                    </div>
+
+
+                    <div class="profile-name">
+
+                        <strong>
+                            {{ user.name }}
+                        </strong>
+
+                        <small>
+                            My Profile
+                        </small>
+
+                    </div>
+
+
+                </a>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =====================================================
+             DASHBOARD CONTENT
+        ====================================================== -->
+
+        <section class="content">
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-section">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        YOUR DAILY NUTRITION SPACE
+                    </p>
+
+
+                    <h1>
+
+                        Good day,
+                        {{ user.name.split()[0] }}!
+
+                        <span>
+                            👋
+                        </span>
+
+                    </h1>
+
+
+                    <p class="welcome-text">
+
+                        Let's make today's choices
+                        healthier, smarter and better.
+
+                    </p>
+
+                </div>
+
+
+                <div class="date-card">
+
+                    <span>
+                        📅
+                    </span>
+
+                    <div>
+
+                        <small>
+                            TODAY
+                        </small>
+
+                        <strong>
+                            {{ today.strftime('%d %B %Y') }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LOGIN SUCCESS MESSAGE
+            ================================================== -->
+
+            {% if show_welcome %}
+
+            <div class="welcome-alert">
+
+
+                <div class="alert-icon">
+                    ✓
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Welcome back,
+                        {{ user.name.split()[0] }}!
+                    </strong>
+
+                    <p>
+
+                        You're successfully logged in.
+                        Let's continue your healthy journey.
+
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    onclick="this.parentElement.remove()">
+
+                    ×
+
+                </button>
+
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 STAT CARDS
+            ================================================== -->
+
+            <div class="stats-grid">
+
+
+                <!-- CALORIES -->
+
+                <div class="stat-card calories">
+
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🔥
+                        </div>
+
+                        <span>
+                            DAILY ENERGY
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        2,000
+
+                        <small>
+                            kcal
+                        </small>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            data-progress="62">
+                        </div>
+
+                    </div>
+
+
+                    <p>
+                        Your estimated daily calorie target
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- PROTEIN -->
+
+                <div class="stat-card protein">
+
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            💪
+                        </div>
+
+                        <span>
+                            PROTEIN
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        62
+
+                        <small>
+                            g
+                        </small>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            data-progress="68">
+                        </div>
+
+                    </div>
+
+
+                    <p>
+                        Keep adding protein-rich foods
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- MEAL PROGRESS -->
+
+                <div class="stat-card meals">
+
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🍽
+                        </div>
+
+                        <span>
+                            MEAL PROGRESS
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        {{ completed_meals }}
+
+                        <small>
+                            / 4
+                        </small>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill"
+                            data-progress="{{ meal_percentage }}">
+                        </div>
+
+                    </div>
+
+
+                    <p>
+
+                        {{ meal_percentage }}%
+                        of today's meals completed
+
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- GOAL -->
+
+                <div class="stat-card goal">
+
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🎯
+                        </div>
+
+                        <span>
+                            YOUR GOAL
+                        </span>
+
+                    </div>
+
+
+                    <div class="goal-text">
+
+                        {{ user.goal or "Maintain Weight" }}
+
+                    </div>
+
+
+                    <p>
+                        Personalized for your journey
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 MAIN GRID
+            ================================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- MEAL JOURNEY -->
+
+                <section class="panel meals-panel">
+
+
+                    <div class="panel-header">
+
+
+                        <div>
+
+                            <span class="section-label">
+                                TODAY'S PLAN
+                            </span>
+
+                            <h2>
+                                Meal Journey
+                            </h2>
+
+                        </div>
+
+
+                        <a href="{{ url_for('mealplanner') }}">
+                            View Plan →
+                        </a>
+
+
+                    </div>
+
+
+
+                    <div class="meal-list">
+
+
+                        {% set meal_names = {
+
+                            'Breakfast':
+                            'Start your morning right',
+
+                            'Lunch':
+                            'Power your afternoon',
+
+                            'Snack':
+                            'A smart little break',
+
+                            'Dinner':
+                            'End your day well'
+
+                        } %}
+
+
+
+                        {% for meal_type in [
+
+                            'Breakfast',
+                            'Lunch',
+                            'Snack',
+                            'Dinner'
+
+                        ] %}
+
+
+                            {% set completed =
+                                meal_status.get(
+                                    meal_type,
+                                    false
+                                )
+                            %}
+
+
+                            {% set planned_meal =
+                                namespace(
+                                    food=meal_names[meal_type],
+                                    cost=0
+                                )
+                            %}
+
+
+                            {% for meal in meals %}
+
+                                {% if meal.meal_type == meal_type %}
+
+                                    {% set planned_meal.food =
+                                        meal.food
+                                    %}
+
+                                    {% set planned_meal.cost =
+                                        meal.cost or 0
+                                    %}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+
+
+                            <div class="meal-row
+                                {% if completed %}
+                                    completed
+                                {% endif %}">
+
+
+                                <!-- ICON -->
+
+                                <div class="meal-icon">
+
+
+                                    {% if meal_type == 'Breakfast' %}
+
+                                        ☀️
+
+                                    {% elif meal_type == 'Lunch' %}
+
+                                        🥗
+
+                                    {% elif meal_type == 'Snack' %}
+
+                                        🍎
+
+                                    {% else %}
+
+                                        🌙
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+
+                                <!-- INFO -->
+
+                                <div class="meal-info">
+
+
+                                    <strong>
+                                        {{ meal_type }}
+                                    </strong>
+
+
+                                    <span>
+                                        {{ planned_meal.food }}
+                                    </span>
+
+
+                                    {% if planned_meal.cost > 0 %}
+
+                                        <small>
+
+                                            ₹{{ "%.0f"|format(
+                                                planned_meal.cost
+                                            ) }}
+
+                                        </small>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+
+                                <!-- BUTTON -->
+
+                                <form
+                                    action="{{
+                                        url_for(
+                                            'complete_meal',
+                                            meal_type=meal_type
+                                        )
+                                    }}"
+                                    method="POST">
+
+
+                                    <button
+                                        type="submit"
+                                        class="meal-btn
+                                        {% if completed %}
+                                            done
+                                        {% endif %}">
+
+
+                                        {% if completed %}
+
+                                            ✓ Completed
+
+                                        {% else %}
+
+                                            Mark Complete
+
+                                        {% endif %}
+
+
+                                    </button>
+
+
+                                </form>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                     HEALTH SNAPSHOT
+                ================================================== -->
+
+                <section class="panel profile-panel">
+
+
+                    <div class="panel-header">
+
+
+                        <div>
+
+                            <span class="section-label">
+                                YOUR PROFILE
+                            </span>
+
+                            <h2>
+                                Health Snapshot
+                            </h2>
+
+                        </div>
+
+
+                        <a href="{{ url_for('profile') }}">
+                            Edit →
+                        </a>
+
+
+                    </div>
+
+
+
+                    <div class="profile-circle">
+
+
+                        <div class="big-avatar">
+
+                            {{ user.name[0]|upper }}
+
+                        </div>
+
+
+                        <h3>
+                            {{ user.name }}
+                        </h3>
+
+
+                        <p>
+
+                            {{ user.diet
+                               or
+                               "Diet preference not set" }}
+
+                        </p>
+
+
+                    </div>
+
+
+
+                    <div class="health-details">
+
+
+                        <div>
+
+                            <span>
+                                Age
+                            </span>
+
+                            <strong>
+
+                                {{ user.age or "--" }}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Height
+                            </span>
+
+                            <strong>
+
+                                {% if user.height %}
+
+                                    {{ user.height }} cm
+
+                                {% else %}
+
+                                    --
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Weight
+                            </span>
+
+                            <strong>
+
+                                {% if user.weight %}
+
+                                    {{ user.weight }} kg
+
+                                {% else %}
+
+                                    --
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- GOAL INFO -->
+
+                    <div class="goal-box">
+
+
+                        <span>
+                            CURRENT GOAL
+                        </span>
+
+
+                        <strong>
+
+                            {{ user.goal or "Maintain Weight" }}
+
+                        </strong>
+
+
+                    </div>
+
+
+                </section>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOTTOM GRID
+            ================================================== -->
+
+            <div class="bottom-grid">
+
+
+                <!-- AI INSIGHT -->
+
+                <section class="ai-card">
+
+
+                    <div class="ai-glow"></div>
+
+
+                    <div class="ai-content">
+
+
+                        <div class="ai-badge">
+
+                            ✨ NUTRIAI INSIGHT
+
+                        </div>
+
+
+                        <h2>
+
+                            Your health journey,
+
+                            <span>
+                                one meal at a time.
+                            </span>
+
+                        </h2>
+
+
+                        <p>
+
+                            Explore personalized meal plans,
+                            discover healthy recipes and
+                            understand your nutrition better
+                            with NutriAI.
+
+                        </p>
+
+
+                        <div class="ai-buttons">
+
+
+                            <a
+                                href="{{ url_for('mealplanner') }}"
+                                class="ai-button">
+
+                                Explore My Plan
+
+                                <span>
+                                    →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ url_for('nutrition') }}"
+                                class="ai-button secondary">
+
+                                Analyze Food
+
+                                <span>
+                                    →
+                                </span>
+
+                            </a>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="ai-visual">
+
+                        🌿
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- QUICK ACTIONS -->
+
+                <section class="panel quick-panel">
+
+
+                    <div class="panel-header">
+
+
+                        <div>
+
+                            <span class="section-label">
+                                SHORTCUTS
+                            </span>
+
+                            <h2>
+                                Quick Actions
+                            </h2>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <a href="{{ url_for('nutrition') }}">
+
+                            <span>
+                                🥗
+                            </span>
+
+                            <strong>
+                                Analyze Food
+                            </strong>
+
+                            <small>
+                                Check nutrition
+                            </small>
+
+                        </a>
+
+
+                        <a href="{{ url_for('recipe') }}">
+
+                            <span>
+                                🤖
+                            </span>
+
+                            <strong>
+                                Find Recipe
+                            </strong>
+
+                            <small>
+                                Create a recipe
+                            </small>
+
+                        </a>
+
+
+                        <a href="{{ url_for('grocery') }}">
+
+                            <span>
+                                🛒
+                            </span>
+
+                            <strong>
+                                Grocery List
+                            </strong>
+
+                            <small>
+                                Manage groceries
+                            </small>
+
+                        </a>
+
+
+                        <a href="{{ url_for('report') }}">
+
+                            <span>
+                                📊
+                            </span>
+
+                            <strong>
+                                View Report
+                            </strong>
+
+                            <small>
+                                Check health report
+                            </small>
+
+                        </a>
+
+
+                    </div>
+
+
+                </section>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 DAILY STATUS
+            ================================================== -->
+
+            <div class="daily-status">
+
+
+                <div class="status-left">
+
+
+                    <div class="status-icon">
+                        🌱
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            TODAY'S PROGRESS
+                        </span>
+
+
+                        <strong>
+
+
+                            {% if completed_meals == 4 %}
+
+                                Amazing! All meals completed 🎉
+
+                            {% elif completed_meals > 0 %}
+
+                                Great start! Keep going 💚
+
+                            {% else %}
+
+                                Your healthy journey starts here 🌿
+
+                            {% endif %}
+
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="status-progress">
+
+
+                    <div class="status-number">
+
+                        {{ meal_percentage }}%
+
+                    </div>
+
+
+                    <div class="status-bar">
+
+
+                        <div
+                            class="status-fill"
+                            data-progress="{{ meal_percentage }}">
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =========================================
+           PROGRESS BARS
+        ========================================== */
+
+        document
+            .querySelectorAll("[data-progress]")
+            .forEach(function (bar) {
+
+
+                const percentage =
+                    parseFloat(
+                        bar.getAttribute(
+                            "data-progress"
+                        )
+                    ) || 0;
+
+
+                const safePercentage =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            percentage
+                        )
+                    );
+
+
+                setTimeout(function () {
+
+                    bar.style.width =
+                        safePercentage + "%";
+
+                }, 150);
+
+
+            });
+
+
+
+        /* =========================================
+           CARD ANIMATION
+        ========================================== */
+
+        const cards =
+            document.querySelectorAll(
+                ".stat-card, .panel, .ai-card, .daily-status"
+            );
+
+
+        cards.forEach(
+            function (card, index) {
+
+                card.style.animationDelay =
+                    (index * 0.06) + "s";
+
+            }
+        );
+
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
+

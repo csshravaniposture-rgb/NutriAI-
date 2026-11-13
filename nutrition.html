@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nutrition Analyzer | NutriAI</title>
+
+<!-- DASHBOARD CSS = MASTER SIDEBAR -->
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<style>
+
+    /* =========================================================
+       NUTRITION PAGE ONLY
+       DO NOT ADD SIDEBAR CSS HERE
+    ========================================================= */
+
+    .nutrition-container {
+        width: min(1240px, 92%);
+        margin: 0 auto;
+        padding: 34px 0 60px;
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .nutrition-hero {
+        position: relative;
+        padding: 5px 0 27px;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 13px;
+        border-radius: 30px;
+        background: rgba(149, 213, 91, 0.08);
+        border: 1px solid rgba(149, 213, 91, 0.16);
+        color: #9be765;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .nutrition-hero h2 {
+        margin-top: 14px;
+        font-size: 40px;
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .nutrition-hero h2 span {
+        color: #9be765;
+    }
+
+    .nutrition-hero > p {
+        margin-top: 10px;
+        max-width: 650px;
+        color: #81968c;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    /* =========================================================
+       AI STATUS
+    ========================================================= */
+
+    .ai-status {
+        position: absolute;
+        right: 0;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 13px;
+        border-radius: 30px;
+        background: rgba(149, 213, 91, 0.07);
+        border: 1px solid rgba(149, 213, 91, 0.13);
+        color: #9be765;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #9be765;
+        box-shadow: 0 0 10px rgba(155, 231, 101, 0.8);
+        animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.45;
+            transform: scale(0.75);
+        }
+
+    }
+
+    /* =========================================================
+       ANALYZER BOX
+    ========================================================= */
+
+    .analyzer-box {
+        position: relative;
+        overflow: hidden;
+        padding: 27px;
+        border-radius: 24px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(26, 58, 42, 0.86),
+                rgba(8, 31, 21, 0.95)
+            );
+
+        border: 1px solid rgba(149, 213, 91, 0.14);
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.25),
+            inset 0 1px rgba(255, 255, 255, 0.04);
+
+        backdrop-filter: blur(20px);
+    }
+
+    .analyzer-box::before {
+        content: "";
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        right: -130px;
+        top: -150px;
+        border-radius: 50%;
+        background: rgba(149, 213, 91, 0.08);
+        filter: blur(45px);
+        pointer-events: none;
+    }
+
+    /* =========================================================
+       ANALYZER HEADER
+    ========================================================= */
+
+    .analyzer-title {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        margin-bottom: 22px;
+    }
+
+    .analyzer-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+        background: rgba(149, 213, 91, 0.10);
+        border: 1px solid rgba(149, 213, 91, 0.15);
+
+        font-size: 22px;
+    }
+
+    .analyzer-title h3 {
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .analyzer-title p {
+        margin-top: 3px;
+        color: #7d9388;
+        font-size: 11px;
+    }
+
+    /* =========================================================
+       FORM
+    ========================================================= */
+
+    .nutrition-form {
+        position: relative;
+        z-index: 2;
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(250px, 2fr)
+            minmax(150px, 0.8fr)
+            auto;
+
+        gap: 14px;
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 7px;
+        color: #aabbb3;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+    }
+
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .form-group input {
+        width: 100%;
+        height: 49px;
+
+        padding: 0 14px 0 42px;
+
+        border-radius: 13px;
+        outline: none;
+
+        border: 1px solid rgba(255, 255, 255, 0.07);
+
+        background: rgba(3, 18, 12, 0.65);
+
+        color: #ffffff;
+        font-size: 12px;
+
+        transition:
+            border-color 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .form-group input:hover {
+        border-color: rgba(149, 213, 91, 0.20);
+    }
+
+    .form-group input:focus {
+        border-color: rgba(149, 213, 91, 0.55);
+
+        box-shadow:
+            0 0 0 4px rgba(149, 213, 91, 0.06);
+    }
+
+    .form-group input::placeholder {
+        color: #60766b;
+    }
+
+    /* =========================================================
+       ANALYZE BUTTON
+    ========================================================= */
+
+    .analyze-btn {
+        height: 49px;
+        padding: 0 23px;
+
+        border: none;
+        border-radius: 13px;
+
+        cursor: pointer;
+
+        color: #092014;
+
+        background:
+            linear-gradient(
+                135deg,
+                #a7e96b,
+                #75c949
+            );
+
+        font-size: 12px;
+        font-weight: 800;
+
+        box-shadow:
+            0 10px 25px rgba(117, 201, 73, 0.18);
+
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .analyze-btn:hover {
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 15px 35px rgba(117, 201, 73, 0.28);
+    }
+
+    .analyze-btn:active {
+        transform: translateY(0);
+    }
+
+    /* =========================================================
+       QUICK FOODS
+    ========================================================= */
+
+    .quick-foods {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap: 7px;
+        margin-top: 17px;
+    }
+
+    .quick-label {
+        color: #637a6e;
+        font-size: 10px;
+    }
+
+    .food-chip {
+        padding: 6px 11px;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.035);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+
+        color: #9aada4;
+        font-size: 10px;
+
+        cursor: pointer;
+
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease;
+    }
+
+    .food-chip:hover {
+        color: #a8e86d;
+
+        border-color:
+            rgba(149, 213, 91, 0.25);
+
+        background:
+            rgba(149, 213, 91, 0.07);
+
+        transform: translateY(-2px);
+    }
+
+    /* =========================================================
+       ERROR
+    ========================================================= */
+
+    .error {
+        margin-top: 18px;
+        padding: 13px 16px;
+
+        border-radius: 13px;
+
+        background:
+            rgba(255, 75, 75, 0.08);
+
+        border:
+            1px solid rgba(255, 75, 75, 0.16);
+
+        color: #ffbaba;
+        font-size: 12px;
+    }
+
+    /* =========================================================
+       RESULTS
+    ========================================================= */
+
+    .results {
+        margin-top: 30px;
+        animation: resultAppear 0.45s ease;
+    }
+
+    @keyframes resultAppear {
+
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+
+    .results-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 16px;
+    }
+
+    .results-heading h2 {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .food-title {
+        color: #9be765;
+    }
+
+    .quantity-text {
+        color: #62786d;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    .analyzed-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 12px;
+
+        border-radius: 20px;
+
+        color: #9be765;
+
+        background:
+            rgba(149, 213, 91, 0.07);
+
+        border:
+            1px solid rgba(149, 213, 91, 0.13);
+
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* =========================================================
+       NUTRITION CARDS
+    ========================================================= */
+
+    .nutrition-cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 13px;
+    }
+
+    .nutrition-card {
+        position: relative;
+        overflow: hidden;
+
+        min-height: 142px;
+        padding: 19px;
+
+        border-radius: 19px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.065),
+                rgba(255, 255, 255, 0.018)
+            );
+
+        border:
+            1px solid rgba(255, 255, 255, 0.07);
+
+        transition:
+            transform 0.3s ease,
+            border-color 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .nutrition-card::after {
+        content: "";
+
+        position: absolute;
+
+        width: 100px;
+        height: 100px;
+
+        right: -50px;
+        bottom: -50px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(149, 213, 91, 0.045);
+
+        filter: blur(15px);
+    }
+
+    .nutrition-card:hover {
+        transform: translateY(-4px);
+
+        border-color:
+            rgba(149, 213, 91, 0.25);
+
+        box-shadow:
+            0 18px 35px rgba(0, 0, 0, 0.20);
+    }
+
+    .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .nutrition-icon {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            rgba(149, 213, 91, 0.09);
+
+        border:
+            1px solid rgba(149, 213, 91, 0.10);
+
+        font-size: 18px;
+    }
+
+    .card-label {
+        color: #71887d;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+    }
+
+    .nutrition-card h2 {
+        margin-top: 18px;
+
+        color: #ffffff;
+
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .nutrition-card h2 span {
+        color: #8fca63;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .card-line {
+        width: 30px;
+        height: 3px;
+
+        margin-top: 9px;
+
+        border-radius: 10px;
+        background: #95d55b;
+    }
+
+    /* =========================================================
+       INSIGHT + SCORE
+    ========================================================= */
+
+    .insight-grid {
+        display: grid;
+
+        grid-template-columns:
+            1.55fr 0.85fr;
+
+        gap: 14px;
+        margin-top: 14px;
+    }
+
+    .summary-box,
+    .score-box,
+    .macro-section {
+        border-radius: 20px;
+
+        border:
+            1px solid rgba(255, 255, 255, 0.07);
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.055),
+                rgba(255, 255, 255, 0.018)
+            );
+
+        backdrop-filter: blur(15px);
+    }
+
+    /* =========================================================
+       SUMMARY
+    ========================================================= */
+
+    .summary-box {
+        padding: 22px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .heading-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            rgba(149, 213, 91, 0.09);
+
+        font-size: 18px;
+    }
+
+    .section-heading h3 {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .section-heading p {
+        margin-top: 2px;
+
+        color: #71867c;
+        font-size: 9px;
+    }
+
+    /* =========================================================
+       FOOD DETAILS
+    ========================================================= */
+
+    .food-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .detail {
+        padding: 11px;
+
+        border-radius: 11px;
+
+        background:
+            rgba(0, 0, 0, 0.15);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.035);
+    }
+
+    .detail small {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #63796e;
+
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .detail strong {
+        color: #d5e2dc;
+        font-size: 11px;
+    }
+
+    .ai-message {
+        padding: 13px;
+
+        border-left:
+            3px solid #95d55b;
+
+        border-radius:
+            0 12px 12px 0;
+
+        background:
+            rgba(149, 213, 91, 0.055);
+
+        color: #a9bbb3;
+
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    /* =========================================================
+       SCORE
+    ========================================================= */
+
+    .score-box {
+        padding: 22px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .score-circle {
+        position: relative;
+
+        width: 135px;
+        height: 135px;
+
+        margin: 4px auto 15px;
+
+        border-radius: 50%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(149, 213, 91, 0.09),
+                transparent 65%
+            );
+
+        border:
+            8px solid rgba(149, 213, 91, 0.13);
+
+        box-shadow:
+            0 0 0 6px rgba(149, 213, 91, 0.025),
+            0 0 35px rgba(149, 213, 91, 0.07);
+    }
+
+    .score-number {
+        color: #a1e66b;
+
+        font-size: 38px;
+        line-height: 1;
+        font-weight: 800;
+    }
+
+    .score-text {
+        margin-top: 5px;
+
+        color: #71877c;
+        font-size: 10px;
+    }
+
+    .score-description {
+        max-width: 230px;
+
+        margin: 0 auto;
+
+        text-align: center;
+
+        color: #879b91;
+
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    /* =========================================================
+       MACRONUTRIENT
+    ========================================================= */
+
+    .macro-section {
+        margin-top: 14px;
+        padding: 21px;
+    }
+
+    .macro-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 17px;
+    }
+
+    .macro-title h3 {
+        font-size: 15px;
+    }
+
+    .macro-title span {
+        color: #667c71;
+        font-size: 9px;
+    }
+
+    .macro {
+        margin-bottom: 13px;
+    }
+
+    .macro:last-child {
+        margin-bottom: 0;
+    }
+
+    .macro-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 6px;
+
+        color: #94a89f;
+        font-size: 10px;
+    }
+
+    .macro-label strong {
+        color: #d4e0da;
+    }
+
+    .progress {
+        width: 100%;
+        height: 6px;
+
+        border-radius: 20px;
+
+        background:
+            rgba(255, 255, 255, 0.055);
+
+        overflow: hidden;
+    }
+
+    .progress span {
+        display: block;
+
+        height: 100%;
+        width: 0%;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #76c84b,
+                #b3ed76
+            );
+
+        box-shadow:
+            0 0 10px rgba(149, 213, 91, 0.18);
+
+        transition:
+            width 1s ease;
+    }
+
+    /* =========================================================
+       EMPTY STATE
+    ========================================================= */
+
+    .empty-state {
+        position: relative;
+        overflow: hidden;
+
+        margin-top: 25px;
+        min-height: 250px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        border-radius: 24px;
+
+        border:
+            1px dashed rgba(149, 213, 91, 0.16);
+
+        background:
+            radial-gradient(
+                circle at center,
+                rgba(149, 213, 91, 0.045),
+                transparent 55%
+            ),
+            rgba(255, 255, 255, 0.018);
+    }
+
+    .empty-icon {
+        width: 67px;
+        height: 67px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 15px;
+
+        border-radius: 20px;
+
+        background:
+            rgba(149, 213, 91, 0.08);
+
+        border:
+            1px solid rgba(149, 213, 91, 0.13);
+
+        font-size: 31px;
+
+        box-shadow:
+            0 15px 40px rgba(0, 0, 0, 0.18);
+    }
+
+    .empty-state h3 {
+        font-size: 17px;
+        margin-bottom: 6px;
+    }
+
+    .empty-state p {
+        color: #6f857a;
+        font-size: 11px;
+    }
+
+    /* =========================================================
+       RESPONSIVE - NUTRITION CONTENT ONLY
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+
+        .nutrition-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .insight-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 800px) {
+
+        .nutrition-form {
+            grid-template-columns: 1fr;
+        }
+
+        .analyze-btn {
+            width: 100%;
+        }
+
+        .ai-status {
+            position: static;
+            display: inline-flex;
+            margin-top: 15px;
+        }
+
+        .nutrition-hero h2 {
+            font-size: 32px;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .nutrition-container {
+            width: 92%;
+            padding-top: 24px;
+        }
+
+        .nutrition-hero h2 {
+            font-size: 28px;
+        }
+
+        .nutrition-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .results-heading {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 9px;
+        }
+
+        .food-details {
+            grid-template-columns: 1fr;
+        }
+
+        .analyzer-box {
+            padding: 20px;
+        }
+
+        .macro-title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="app">
+
+```
+<!-- =========================================================
+     EXACT DASHBOARD SIDEBAR
+========================================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🌿
+        </div>
+
+        <div class="brand-text">
+
+            <h2>
+                Nutri<span>AI</span>
+            </h2>
+
+            <small>
+                SMART NUTRITION
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="{{ url_for('dashboard') }}"
+           class="nav-item">
+
+            <span>⌂</span>
+            <label>Dashboard</label>
+
+        </a>
+
+
+        <a href="{{ url_for('mealplanner') }}"
+           class="nav-item">
+
+            <span>🍽</span>
+            <label>Meal Planner</label>
+
+        </a>
+
+
+        <!-- ONLY NUTRITION IS ACTIVE -->
+
+        <a href="{{ url_for('nutrition') }}"
+           class="nav-item active">
+
+            <span>🥗</span>
+            <label>Nutrition</label>
+
+        </a>
+
+
+        <a href="{{ url_for('recipe') }}"
+           class="nav-item">
+
+            <span>🤖</span>
+            <label>AI Recipes</label>
+
+        </a>
+
+
+        <a href="{{ url_for('grocery') }}"
+           class="nav-item">
+
+            <span>🛒</span>
+            <label>Grocery</label>
+
+        </a>
+
+
+        <a href="{{ url_for('report') }}"
+           class="nav-item">
+
+            <span>📊</span>
+            <label>My Report</label>
+
+        </a>
+
+
+        <a href="{{ url_for('profile') }}"
+           class="nav-item">
+
+            <span>👤</span>
+            <label>Profile</label>
+
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="mini-tip">
+
+            <div class="tip-icon">
+                ✨
+            </div>
+
+            <div>
+
+                <strong>
+                    Daily Tip
+                </strong>
+
+                <p>
+                    Stay hydrated and eat mindfully.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a href="{{ url_for('logout') }}"
+           class="logout">
+
+            <span>↪</span>
+            <label>Logout</label>
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================== -->
+
+<main class="main">
+
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <div class="topbar-icon">
+                🥑
+            </div>
+
+            <div>
+
+                <h1>
+                    Nutrition Analyzer
+                </h1>
+
+                <p>
+                    Turn your food into useful nutrition insights.
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         PAGE CONTENT
+    ====================================================== -->
+
+    <div class="nutrition-container">
+
+
+        <!-- HERO -->
+
+        <section class="nutrition-hero">
+
+            <div class="hero-badge">
+                ✨ SMART FOOD ANALYSIS
+            </div>
+
+
+            <div class="ai-status">
+
+                <span class="status-dot"></span>
+
+                NutriAI Analysis Ready
+
+            </div>
+
+
+            <h2>
+
+                Understand what's on
+
+                <span>
+                    your plate.
+                </span>
+
+            </h2>
+
+
+            <p>
+
+                Enter any food and serving size to explore calories,
+                macros and personalized nutrition insights.
+
+            </p>
+
+        </section>
+
+
+        <!-- ANALYZER -->
+
+        <section class="analyzer-box">
+
+
+            <div class="analyzer-title">
+
+                <div class="analyzer-icon">
+                    🔬
+                </div>
+
+                <div>
+
+                    <h3>
+                        Analyze Your Food
+                    </h3>
+
+                    <p>
+                        Tell NutriAI what you ate and we'll break it down.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                method="POST"
+                action="{{ url_for('nutrition') }}"
+                class="nutrition-form"
+            >
+
+                <div class="form-group">
+
+                    <label>
+                        🍎 FOOD
+                    </label>
+
+                    <div class="input-wrap">
+
+                        <span class="input-icon">
+                            🍽️
+                        </span>
+
+                        <input
+                            type="text"
+                            id="foodInput"
+                            name="food"
+                            placeholder="Try Apple, Paneer, Rice..."
+                            value="{{ food or '' }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        ⚖ QUANTITY
+                    </label>
+
+                    <div class="input-wrap">
+
+                        <span class="input-icon">
+                            ⚖️
+                        </span>
+
+                        <input
+                            type="number"
+                            name="quantity"
+                            placeholder="100"
+                            min="1"
+                            step="1"
+                            value="{{ quantity or 100 }}"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                >
+                    🔍 Analyze Food
+                </button>
+
+            </form>
+
+
+            <!-- QUICK FOODS -->
+
+            <div class="quick-foods">
+
+                <span class="quick-label">
+                    Quick try:
+                </span>
+
+
+                <button
+                    type="button"
+                    class="food-chip"
+                    onclick="setFood('Apple')"
+                >
+                    🍎 Apple
+                </button>
+
+
+                <button
+                    type="button"
+                    class="food-chip"
+                    onclick="setFood('Paneer')"
+                >
+                    🧀 Paneer
+                </button>
+
+
+                <button
+                    type="button"
+                    class="food-chip"
+                    onclick="setFood('Rice')"
+                >
+                    🍚 Rice
+                </button>
+
+
+                <button
+                    type="button"
+                    class="food-chip"
+                    onclick="setFood('Egg')"
+                >
+                    🥚 Egg
+                </button>
+
+
+                <button
+                    type="button"
+                    class="food-chip"
+                    onclick="setFood('Chicken')"
+                >
+                    🍗 Chicken
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ERROR -->
+
+        {% if error %}
+
+            <div class="error">
+                ⚠️ {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <!-- RESULTS -->
+
+        {% if nutrition_data %}
+
+        <section class="results">
+
+
+            <div class="results-heading">
+
+                <h2>
+
+                    Nutrition for
+
+                    <span class="food-title">
+                        {{ food }}
+                    </span>
+
+                    <span class="quantity-text">
+                        · {{ quantity }}g
+                    </span>
+
+                </h2>
+
+
+                <div class="analyzed-badge">
+                    ✓ ANALYZED
+                </div>
+
+            </div>
+
+
+            <!-- NUTRITION CARDS -->
+
+            <div class="nutrition-cards">
+
+
+                <div class="nutrition-card">
+
+                    <div class="card-top">
+
+                        <div class="nutrition-icon">
+                            🔥
+                        </div>
+
+                        <span class="card-label">
+                            ENERGY
+                        </span>
+
+                    </div>
+
+                    <h2>
+
+                        {{ nutrition_data.calories }}
+
+                        <span>
+                            kcal
+                        </span>
+
+                    </h2>
+
+                    <div class="card-line"></div>
+
+                </div>
+
+
+                <div class="nutrition-card">
+
+                    <div class="card-top">
+
+                        <div class="nutrition-icon">
+                            💪
+                        </div>
+
+                        <span class="card-label">
+                            PROTEIN
+                        </span>
+
+                    </div>
+
+                    <h2>
+
+                        {{ nutrition_data.protein }}
+
+                        <span>
+                            g
+                        </span>
+
+                    </h2>
+
+                    <div class="card-line"></div>
+
+                </div>
+
+
+                <div class="nutrition-card">
+
+                    <div class="card-top">
+
+                        <div class="nutrition-icon">
+                            🌾
+                        </div>
+
+                        <span class="card-label">
+                            CARBS
+                        </span>
+
+                    </div>
+
+                    <h2>
+
+                        {{ nutrition_data.carbs }}
+
+                        <span>
+                            g
+                        </span>
+
+                    </h2>
+
+                    <div class="card-line"></div>
+
+                </div>
+
+
+                <div class="nutrition-card">
+
+                    <div class="card-top">
+
+                        <div class="nutrition-icon">
+                            🥑
+                        </div>
+
+                        <span class="card-label">
+                            FAT
+                        </span>
+
+                    </div>
+
+                    <h2>
+
+                        {{ nutrition_data.fat }}
+
+                        <span>
+                            g
+                        </span>
+
+                    </h2>
+
+                    <div class="card-line"></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- INSIGHTS -->
+
+            <div class="insight-grid">
+
+
+                <section class="summary-box">
+
+                    <div class="section-heading">
+
+                        <div class="heading-icon">
+                            🤖
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Nutrition Insight
+                            </h3>
+
+                            <p>
+                                Your NutriAI food breakdown
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="food-details">
+
+
+                        <div class="detail">
+
+                            <small>
+                                FOOD
+                            </small>
+
+                            <strong>
+                                🍎 {{ food }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <small>
+                                SERVING
+                            </small>
+
+                            <strong>
+                                ⚖ {{ quantity }} grams
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <small>
+                                ENERGY
+                            </small>
+
+                            <strong>
+                                🔥 {{ nutrition_data.calories }} kcal
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <small>
+                                PROTEIN
+                            </small>
+
+                            <strong>
+                                💪 {{ nutrition_data.protein }} g
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="ai-message">
+
+                        💡
+                        {{ nutrition_data.summary }}
+
+                    </div>
+
+                </section>
+
+
+                <!-- SCORE -->
+
+                <section class="score-box">
+
+                    <div class="section-heading">
+
+                        <div class="heading-icon">
+                            ⭐
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Nutrition Score
+                            </h3>
+
+                            <p>
+                                Based on the analyzed nutrients
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-circle">
+
+                        <div class="score-number">
+
+                            {{ nutrition_data.score|default(0) }}
+
+                        </div>
+
+                        <div class="score-text">
+                            / 100
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-description">
+
+                        {{ nutrition_data.score_message|default(
+                            "A balanced food choice when included as part of a varied diet."
+                        ) }}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- MACRONUTRIENT BREAKDOWN -->
+
+            <section class="macro-section">
+
+
+                <div class="macro-title">
+
+                    <h3>
+                        📊 Macronutrient Breakdown
+                    </h3>
+
+                    <span>
+                        Per {{ quantity }}g serving
+                    </span>
+
+                </div>
+
+
+                <!-- PROTEIN -->
+
+                <div class="macro">
+
+                    <div class="macro-label">
+
+                        <span>
+                            💪 Protein
+                        </span>
+
+                        <strong>
+                            {{ nutrition_data.protein }}g
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <span
+                            class="protein-progress"
+                            data-width="{{ [nutrition_data.protein * 3, 100] | min }}"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARBS -->
+
+                <div class="macro">
+
+                    <div class="macro-label">
+
+                        <span>
+                            🌾 Carbohydrates
+                        </span>
+
+                        <strong>
+                            {{ nutrition_data.carbs }}g
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <span
+                            class="carbs-progress"
+                            data-width="{{ [nutrition_data.carbs, 100] | min }}"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FAT -->
+
+                <div class="macro">
+
+                    <div class="macro-label">
+
+                        <span>
+                            🥑 Fat
+                        </span>
+
+                        <strong>
+                            {{ nutrition_data.fat }}g
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress">
+
+                        <span
+                            class="fat-progress"
+                            data-width="{{ [nutrition_data.fat * 2, 100] | min }}"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        {% else %}
+
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🥗
+            </div>
+
+            <h3>
+                Ready to analyze?
+            </h3>
+
+            <p>
+                Enter a food above and let NutriAI reveal what's inside.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</main>
+```
+
+</div>
+
+<script>
+
+    /* =========================================================
+       QUICK FOOD
+    ========================================================= */
+
+    function setFood(food) {
+
+        const input =
+            document.getElementById("foodInput");
+
+        if (input) {
+
+            input.value = food;
+            input.focus();
+
+        }
+
+    }
+
+
+    /* =========================================================
+       PROGRESS BARS
+    ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const progressBars =
+                document.querySelectorAll(
+                    ".protein-progress, .carbs-progress, .fat-progress"
+                );
+
+
+            progressBars.forEach(
+                function (bar) {
+
+                    const width =
+                        bar.dataset.width;
+
+                    if (width) {
+
+                        setTimeout(
+                            function () {
+
+                                bar.style.width =
+                                    width + "%";
+
+                            },
+                            150
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

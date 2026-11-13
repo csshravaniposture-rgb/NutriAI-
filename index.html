@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NutriAI</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Floating Background -->
+
+<div class="blur one"></div>
+<div class="blur two"></div>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+<div class="logo">
+
+🥑 NutriAI
+
+</div>
+
+<ul>
+
+<li><a href="/">Home</a></li>
+
+<li><a href="#features">Features</a></li>
+
+<li><a href="#about">About</a></li>
+
+<li>
+    <a href="{{ url_for('login') }}">Login</a>
+</li>
+
+<li>
+
+<a class="register-btn" href="{{ url_for('register') }}">
+    Register
+</a>
+
+</li>
+
+</ul>
+
+</nav>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+<div class="hero-left">
+
+<div class="badge">
+
+🤖 AI Powered Nutrition Platform
+
+</div>
+
+<h1>
+
+Eat <span>Healthy</span><br>
+
+Live <span>Smarter</span>
+
+</h1>
+
+<p>
+
+NutriAI helps you create personalized meal plans,
+analyze nutrition, generate recipes,
+manage groceries and maintain a healthy lifestyle
+using Artificial Intelligence.
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="{{ url_for('register') }}" class="btn-primary">
+    Get Started →
+</a>
+
+<a href="#features" class="btn-secondary">
+
+Explore
+
+</a>
+
+</div>
+
+<div class="stats">
+
+<div>
+
+<h2>1000+</h2>
+
+<p>Healthy Meals</p>
+
+</div>
+
+<div>
+
+<h2>500+</h2>
+
+<p>Recipes</p>
+
+</div>
+
+<div>
+
+<h2>24/7</h2>
+
+<p>AI Support</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Right Side -->
+
+<div class="hero-right">
+
+<div class="phone">
+
+<div class="screen">
+
+<div class="top">
+
+<h3>Hello 👋</h3>
+
+<p>Ready for a healthy day?</p>
+
+</div>
+
+<div class="score">
+
+<h4>Health Score</h4>
+
+<h1>92%</h1>
+
+<div class="progress">
+
+<div class="fill"></div>
+
+</div>
+
+</div>
+
+<div class="food-card">
+
+🍲 High Protein Salad
+
+<span>420 kcal</span>
+
+</div>
+
+<div class="bottom-icons">
+
+<i class="fa-solid fa-house"></i>
+
+<i class="fa-solid fa-bowl-food"></i>
+
+<i class="fa-solid fa-heart-pulse"></i>
+
+<i class="fa-solid fa-user"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="floating meal">
+
+🍽️ Meal Plan
+
+</div>
+
+<div class="floating water">
+
+💧 2.1L Water
+
+</div>
+
+<div class="floating recipe">
+
+🍲 500+ Recipes
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features" id="features">
+
+<div class="wave-top"></div>
+<div class="section-badge">
+    ✨ SMART NUTRITION, POWERED BY AI
+</div>
+
+<h2>
+Why Choose <span>NutriAI?</span>
+</h2>
+
+<p class="subtitle">
+Everything you need for a healthy lifestyle in one intelligent platform.
+</p>
+
+<div class="cards">
+
+<div class="card">
+
+<div class="icon">🍽️</div>
+
+<h3>AI Meal Planner</h3>
+
+<p>
+Personalized meal plans based on your goals, budget and diet preference.
+</p>
+
+<a href="#">Learn More →</a>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🥗</div>
+
+<h3>Nutrition Analyzer</h3>
+
+<p>
+Instantly analyze calories, protein, carbohydrates and vitamins.
+</p>
+
+<a href="#">Learn More →</a>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🍲</div>
+
+<h3>Recipe Generator</h3>
+
+<p>
+Generate delicious recipes using ingredients already available at home.
+</p>
+
+<a href="#">Learn More →</a>
+
+</div>
+
+<div class="card">
+
+<div class="icon">🛒</div>
+
+<h3>Smart Grocery</h3>
+
+<p>
+Prepare grocery lists and estimate shopping costs with AI.
+</p>
+
+<a href="#">Learn More →</a>
+
+</div>
+
+</div>
+
+</section>
+<section class="how-it-works">
+
+<h2>How NutriAI Works</h2>
+
+<p class="subtitle">
+Start your healthy lifestyle in just 3 simple steps.
+</p>
+
+<div class="steps">
+
+<div class="step">
+
+<div class="step-number">1</div>
+
+<h3>Create Your Profile</h3>
+
+<p>
+Enter your age, height, weight, diet preference and health goal.
+</p>
+
+</div>
+
+<div class="step">
+
+<div class="step-number">2</div>
+
+<h3>AI Generates Your Plan</h3>
+
+<p>
+NutriAI prepares meal plans, nutrition analysis and healthy recipes.
+</p>
+
+</div>
+
+<div class="step">
+
+<div class="step-number">3</div>
+
+<h3>Track Your Progress</h3>
+
+<p>
+Monitor calories, BMI, water intake and health score daily.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= PROFESSIONAL FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-container">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+
+            <div class="footer-logo">
+                🥑 NutriAI
+            </div>
+
+            <p>
+                Your intelligent AI nutrition companion.
+                Plan smarter meals, understand your nutrition,
+                discover healthy recipes and manage your groceries
+                in one place.
+            </p>
+
+            <div class="footer-social">
+
+                <a href="#" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="#" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+
+                <a href="#" aria-label="X">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Product -->
+        <div class="footer-section">
+
+            <h3>Our Features</h3>
+
+            <div class="footer-links">
+
+                <a href="#features">
+                    AI Meal Planner
+                </a>
+
+                <a href="#features">
+                    Nutrition Analyzer
+                </a>
+
+                <a href="#features">
+                    Recipe Generator
+                </a>
+
+                <a href="#features">
+                    Smart Grocery
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Information -->
+        <div class="footer-section">
+
+            <h3>NutriAI</h3>
+
+            <div class="footer-links">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#about">
+                    About Us
+                </a>
+
+                <a href="#">
+                    How It Works
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Contact -->
+        <div class="footer-section footer-contact">
+
+            <h3>Get in Touch</h3>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                support@nutriai.com
+            </p>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Mumbai, India
+            </p>
+
+            <p>
+                <i class="fa-solid fa-clock"></i>
+                24/7
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Footer Bottom -->
+
+    <div class="footer-bottom">
+
+        <div class="footer-legal">
+
+            <a href="#">
+                Privacy Policy
+            </a>
+
+            <a href="#">
+                Terms of Service
+            </a>
+
+        </div>
+
+        <p class="copyright">
+            © 2026 NutriAI. All rights reserved.
+        </p>
+
+        <p class="footer-tagline">
+            Eat Healthy • Live Smarter 🌿
+        </p>
+
+    </div>
+
+</footer>
+</body>
+
+</html>

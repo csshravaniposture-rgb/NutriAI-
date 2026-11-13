@@ -1,0 +1,2077 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Meal Planner | NutriAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        :root {
+            --bg: #061710;
+            --bg2: #091f16;
+            --card: rgba(18, 48, 34, 0.72);
+            --green: #9be765;
+            --green2: #74c94a;
+            --text: #f4f8f5;
+            --muted: #82998d;
+            --border: rgba(255,255,255,.075);
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 85% 5%,
+                    rgba(155,231,101,.12),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 5% 90%,
+                    rgba(70,150,95,.12),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #04120c,
+                    #071b12 55%,
+                    #04140d
+                );
+
+            overflow-x: hidden;
+        }
+
+        /* =====================================================
+           BACKGROUND GLOW
+        ===================================================== */
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            background: rgba(149,213,91,.035);
+            filter: blur(90px);
+            top: 15%;
+            right: 10%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* =====================================================
+           LAYOUT
+        ===================================================== */
+
+        .container {
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 255px;
+
+            padding: 25px 17px;
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #102d21 0%,
+                    #0a2118 55%,
+                    #06150f 100%
+                );
+
+            border-right: 1px solid rgba(149,213,91,.11);
+
+            z-index: 1000;
+        }
+
+        /* LOGO */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 5px 9px 30px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(155,231,101,.16),
+                    rgba(155,231,101,.04)
+                );
+
+            border: 1px solid rgba(155,231,101,.20);
+
+            font-size: 23px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.18);
+        }
+
+        .logo h2 {
+            color: var(--green);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .logo small {
+            display: block;
+            color: #698276;
+            font-size: 9px;
+            margin-top: 2px;
+            letter-spacing: .6px;
+        }
+
+        /* NAV */
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-title {
+            color: #5f796c;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 12px 13px 7px;
+        }
+
+        .sidebar-nav a {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            padding: 12px 13px;
+
+            border-radius: 13px;
+
+            color: #9db1a7;
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            transition: .25s ease;
+        }
+
+        .sidebar-nav a:hover {
+            color: #d8f4c3;
+            background: rgba(149,213,91,.07);
+            transform: translateX(3px);
+        }
+
+        .sidebar-nav a.active {
+            color: #b9ed86;
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(149,213,91,.19),
+                    rgba(149,213,91,.045)
+                );
+
+            box-shadow:
+                inset 3px 0 0 var(--green),
+                0 7px 22px rgba(0,0,0,.12);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        /* SIDEBAR BOTTOM */
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .mini-tip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 13px;
+            margin: 0 3px 13px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.09),
+                    rgba(149,213,91,.025)
+                );
+
+            border: 1px solid rgba(149,213,91,.10);
+        }
+
+        .tip-icon {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: rgba(149,213,91,.08);
+
+            font-size: 17px;
+        }
+
+        .mini-tip strong {
+            display: block;
+            color: #b9e98d;
+            font-size: 10px;
+        }
+
+        .mini-tip p {
+            color: #71877c;
+            font-size: 9px;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        .logout {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 14px 13px 8px;
+
+            color: #91a59b;
+            text-decoration: none;
+
+            border-top: 1px solid rgba(255,255,255,.06);
+
+            font-size: 13px;
+
+            transition: .25s;
+        }
+
+        .logout:hover {
+            color: #ff9696;
+        }
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+            min-height: 82px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 18px 40px;
+
+            border-bottom: 1px solid rgba(255,255,255,.055);
+
+            background:
+                rgba(4,18,12,.60);
+
+            backdrop-filter: blur(20px);
+
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar h1 {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .topbar p {
+            color: #71877c;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page {
+            width: min(1200px, 92%);
+            margin: auto;
+            padding: 38px 0 70px;
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            padding: 5px 0 32px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 14px;
+
+            border-radius: 30px;
+
+            color: var(--green);
+
+            background:
+                rgba(149,213,91,.07);
+
+            border: 1px solid rgba(149,213,91,.15);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            box-shadow:
+                0 8px 30px rgba(149,213,91,.035);
+        }
+
+        .hero h1 {
+            max-width: 850px;
+
+            margin-top: 17px;
+
+            font-size: clamp(38px, 5vw, 58px);
+
+            line-height: 1.02;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero p {
+            max-width: 690px;
+
+            margin-top: 15px;
+
+            color: #80968b;
+
+            font-size: 13px;
+
+            line-height: 1.75;
+        }
+
+        /* PROFILE PILLS */
+
+        .profile-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+
+            margin-top: 20px;
+        }
+
+        .profile-pill {
+            padding: 9px 14px;
+
+            border-radius: 30px;
+
+            color: #9caf a5;
+
+            color: #9cafa5;
+
+            background:
+                rgba(255,255,255,.032);
+
+            border: 1px solid rgba(255,255,255,.065);
+
+            font-size: 10px;
+
+            transition: .25s;
+        }
+
+        .profile-pill:hover {
+            border-color: rgba(149,213,91,.20);
+            transform: translateY(-2px);
+        }
+
+        .profile-pill strong {
+            color: var(--green);
+        }
+
+        /* =====================================================
+           GENERATOR
+        ===================================================== */
+
+        .generator-box {
+            position: relative;
+            overflow: hidden;
+
+            padding: 29px;
+
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(27,59,43,.90),
+                    rgba(8,29,20,.94)
+                );
+
+            border: 1px solid rgba(149,213,91,.14);
+
+            box-shadow:
+                0 25px 80px rgba(0,0,0,.25);
+
+            backdrop-filter: blur(20px);
+        }
+
+        .generator-box::before {
+            content: "";
+
+            position: absolute;
+
+            width: 330px;
+            height: 330px;
+
+            right: -150px;
+            top: -190px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(149,213,91,.08);
+
+            filter: blur(55px);
+        }
+
+        .generator-box::after {
+            content: "";
+
+            position: absolute;
+
+            width: 150px;
+            height: 150px;
+
+            left: -100px;
+            bottom: -100px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(80,160,100,.07);
+
+            filter: blur(35px);
+        }
+
+        .generator-title {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            margin-bottom: 23px;
+        }
+
+        .generator-icon {
+            width: 54px;
+            height: 54px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.14),
+                    rgba(149,213,91,.04)
+                );
+
+            border: 1px solid rgba(149,213,91,.18);
+
+            font-size: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(149,213,91,.06);
+        }
+
+        .generator-title h2 {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .generator-title p {
+            color: #738a7e;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .planner-form {
+            position: relative;
+            z-index: 3;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr 1fr auto;
+
+            gap: 13px;
+
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+
+            color: #9caf a5;
+
+            color: #9caf a5;
+
+            color: #a7b8b0;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: .9px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            height: 50px;
+
+            padding: 0 14px;
+
+            border-radius: 13px;
+
+            outline: none;
+
+            color: white;
+
+            background:
+                rgba(2,15,10,.68);
+
+            border: 1px solid rgba(255,255,255,.075);
+
+            font-size: 11px;
+
+            transition: .25s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: rgba(149,213,91,.55);
+
+            box-shadow:
+                0 0 0 4px rgba(149,213,91,.055);
+        }
+
+        .form-group select option {
+            background: #0b291c;
+            color: white;
+        }
+
+        /* GENERATE BUTTON */
+
+        .generate-btn {
+            height: 50px;
+
+            padding: 0 23px;
+
+            border: none;
+            border-radius: 13px;
+
+            cursor: pointer;
+
+            color: #07170e;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #a9eb70,
+                    #70c749
+                );
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 12px 30px rgba(112,199,73,.16);
+
+            transition: .3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 17px 40px rgba(112,199,73,.27);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .generate-btn.loading {
+            pointer-events: none;
+            opacity: .75;
+        }
+
+        .generate-btn.loading::after {
+            content: " Generating...";
+        }
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        .error-box {
+            margin-top: 18px;
+
+            padding: 14px 17px;
+
+            border-radius: 14px;
+
+            color: #ffbaba;
+
+            background:
+                rgba(255,75,75,.07);
+
+            border: 1px solid rgba(255,75,75,.17);
+
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           PLAN HEADING
+        ===================================================== */
+
+        .plan-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-top: 42px;
+            margin-bottom: 18px;
+        }
+
+        .plan-heading h2 {
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .plan-heading p {
+            color: #71877c;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .ai-badge {
+            padding: 8px 13px;
+
+            border-radius: 20px;
+
+            color: var(--green);
+
+            background:
+                rgba(149,213,91,.06);
+
+            border: 1px solid rgba(149,213,91,.13);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+        }
+
+        /* =====================================================
+           MEAL GRID
+        ===================================================== */
+
+        .meal-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        /* =====================================================
+           MEAL CARD
+        ===================================================== */
+
+        .meal-card {
+            position: relative;
+            overflow: hidden;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.065),
+                    rgba(255,255,255,.018)
+                );
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            box-shadow:
+                0 15px 45px rgba(0,0,0,.13);
+
+            transition: .3s;
+        }
+
+        .meal-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 170px;
+            height: 170px;
+
+            top: -100px;
+            right: -80px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(149,213,91,.06);
+
+            filter: blur(30px);
+        }
+
+        .meal-card:hover {
+            transform: translateY(-6px);
+
+            border-color:
+                rgba(149,213,91,.20);
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,.24);
+        }
+
+        /* MEAL HEADER */
+
+        .meal-header {
+            position: relative;
+
+            padding: 23px 22px 18px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.055);
+        }
+
+        .meal-type {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 7px;
+
+            color: var(--green);
+
+            background:
+                rgba(149,213,91,.065);
+
+            font-size: 8px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+        .meal-name {
+            margin-top: 9px;
+
+            color: white;
+
+            font-size: 21px;
+
+            line-height: 1.2;
+
+            font-weight: 800;
+
+            letter-spacing: -.3px;
+        }
+
+        .meal-description {
+            margin-top: 8px;
+
+            color: #748b80;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           NUTRITION
+        ===================================================== */
+
+        .nutrition-row {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 7px;
+
+            padding: 16px 21px;
+        }
+
+        .nutrition-mini {
+            padding: 11px 5px;
+
+            text-align: center;
+
+            border-radius: 11px;
+
+            background:
+                rgba(0,0,0,.15);
+
+            border:
+                1px solid rgba(255,255,255,.035);
+
+            transition: .2s;
+        }
+
+        .nutrition-mini:hover {
+            background:
+                rgba(149,213,91,.045);
+        }
+
+        .nutrition-mini span {
+            display: block;
+
+            color: #60766b;
+
+            font-size: 7px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+        }
+
+        .nutrition-mini strong {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #d9e5df;
+
+            font-size: 10px;
+        }
+
+        /* =====================================================
+           RECIPE
+        ===================================================== */
+
+        .recipe-section {
+            padding: 2px 21px 0;
+        }
+
+        .recipe-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 14px;
+
+            color: #a9e970;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+        .recipe-block {
+            margin-bottom: 15px;
+        }
+
+        .recipe-block h4 {
+            margin-bottom: 8px;
+
+            color: #d4e0da;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        /* INGREDIENTS */
+
+        .ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .ingredient {
+            padding: 6px 9px;
+
+            border-radius: 8px;
+
+            color: #91a69c;
+
+            background:
+                rgba(255,255,255,.033);
+
+            border:
+                1px solid rgba(255,255,255,.05);
+
+            font-size: 9px;
+
+            transition: .2s;
+        }
+
+        .ingredient:hover {
+            color: #c8eaa9;
+            border-color: rgba(149,213,91,.18);
+        }
+
+        /* INSTRUCTIONS */
+
+        .instructions {
+            padding: 12px 13px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(149,213,91,.035);
+
+            border-left:
+                3px solid var(--green);
+
+            color: #9aafa5;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+        }
+
+        .instructions ol {
+            padding-left: 17px;
+        }
+
+        .instructions li {
+            margin-bottom: 4px;
+        }
+
+        /* =====================================================
+           GROCERY BUTTON
+        ===================================================== */
+
+        .grocery-action {
+            padding: 0 21px 17px;
+        }
+
+        .add-grocery-btn {
+            width: 100%;
+
+            padding: 12px 15px;
+
+            border-radius: 12px;
+
+            border:
+                1px solid rgba(149,213,91,.16);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.11),
+                    rgba(149,213,91,.035)
+                );
+
+            color: #a9e970;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: .3s;
+        }
+
+        .add-grocery-btn:hover {
+            transform: translateY(-2px);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.19),
+                    rgba(149,213,91,.07)
+                );
+
+            box-shadow:
+                0 10px 25px rgba(149,213,91,.10);
+        }
+
+        .add-grocery-btn span {
+            margin-right: 6px;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .meal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-top: 18px;
+
+            padding: 14px 21px;
+
+            border-top:
+                1px solid rgba(255,255,255,.05);
+        }
+
+        .cost {
+            color: var(--green);
+
+            font-size: 12px;
+
+            font-weight: 800;
+        }
+
+        .complete-btn {
+            padding: 8px 13px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid rgba(149,213,91,.17);
+
+            background:
+                rgba(149,213,91,.055);
+
+            color: #a9e970;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+
+            background:
+                rgba(149,213,91,.14);
+
+            box-shadow:
+                0 7px 20px rgba(149,213,91,.08);
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            margin-top: 30px;
+
+            min-height: 310px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 30px;
+
+            border-radius: 24px;
+
+            border:
+                1px dashed rgba(149,213,91,.16);
+
+            background:
+                rgba(255,255,255,.015);
+        }
+
+        .empty-icon {
+            width: 75px;
+            height: 75px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 23px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.11),
+                    rgba(149,213,91,.025)
+                );
+
+            border:
+                1px solid rgba(149,213,91,.10);
+
+            font-size: 33px;
+
+            margin-bottom: 17px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,.15);
+        }
+
+        .empty-state h3 {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            max-width: 480px;
+
+            margin-top: 7px;
+
+            color: #6f857a;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1050px) {
+
+            .planner-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .generate-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 850px) {
+
+            .sidebar {
+                width: 76px;
+                padding: 22px 10px;
+            }
+
+            .logo {
+                justify-content: center;
+                padding: 4px 0 25px;
+            }
+
+            .logo > div:last-child {
+                display: none;
+            }
+
+            .nav-title,
+            .sidebar-nav a span:last-child,
+            .mini-tip,
+            .logout label {
+                display: none;
+            }
+
+            .sidebar-nav a,
+            .logout {
+                justify-content: center;
+                padding: 13px 8px;
+            }
+
+            .main {
+                margin-left: 76px;
+            }
+
+            .topbar {
+                padding: 18px 25px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .page {
+                width: 92%;
+                padding-top: 27px;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+
+            .topbar h1 {
+                font-size: 18px;
+            }
+
+            .topbar p {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .planner-form {
+                grid-template-columns: 1fr;
+            }
+
+            .meal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plan-heading {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .generator-box {
+                padding: 21px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .sidebar {
+                width: 62px;
+                padding-left: 7px;
+                padding-right: 7px;
+            }
+
+            .main {
+                margin-left: 62px;
+            }
+
+            .page {
+                width: 94%;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+                letter-spacing: -1px;
+            }
+
+            .hero p {
+                font-size: 12px;
+            }
+
+            .generator-title h2 {
+                font-size: 17px;
+            }
+
+            .generator-title p {
+                font-size: 10px;
+            }
+
+            .nutrition-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .meal-name {
+                font-size: 19px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+   
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🌿
+        </div>
+
+        <div class="brand-text">
+            <h2>Nutri<span>AI</span></h2>
+            <small>SMART NUTRITION</small>
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="{{ url_for('dashboard') }}" class="nav-item">
+            <span>⌂</span>
+            <label>Dashboard</label>
+        </a>
+
+        <a href="{{ url_for('mealplanner') }}" class="nav-item active">
+            <span>🍽</span>
+            <label>Meal Planner</label>
+        </a>
+
+        <a href="{{ url_for('nutrition') }}" class="nav-item">
+            <span>🥗</span>
+            <label>Nutrition</label>
+        </a>
+
+        <a href="{{ url_for('recipe') }}" class="nav-item">
+            <span>🤖</span>
+            <label>AI Recipes</label>
+        </a>
+
+        <a href="{{ url_for('grocery') }}" class="nav-item">
+            <span>🛒</span>
+            <label>Grocery</label>
+        </a>
+
+        <a href="{{ url_for('report') }}" class="nav-item">
+            <span>📊</span>
+            <label>My Report</label>
+        </a>
+
+        <a href="{{ url_for('profile') }}" class="nav-item">
+            <span>👤</span>
+            <label>Profile</label>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="mini-tip">
+            <div class="tip-icon">✨</div>
+
+            <div>
+                <strong>Daily Tip</strong>
+                <p>Stay hydrated and eat mindfully.</p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <span>↪</span>
+            <label>Logout</label>
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    🤖 AI Meal Planner
+                </h1>
+
+                <p>
+                    Your meals, recipes and nutrition — generated together.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE -->
+
+        <div class="page">
+
+
+            <!-- =================================================
+                 HERO
+            ================================================== -->
+
+            <section class="hero">
+
+                <div class="hero-badge">
+                    ✨ PERSONALIZED AI NUTRITION
+                </div>
+
+
+                <h1>
+                    Your meals.
+                    <span>Your recipes.</span>
+                    Your plan.
+                </h1>
+
+
+                <p>
+                    NutriAI creates a personalized daily meal plan based
+                    on your goal, diet and budget — including complete
+                    recipes and nutrition information for every meal.
+                </p>
+
+
+                <!-- PROFILE -->
+
+                <div class="profile-strip">
+
+                    {% if user %}
+
+                    <div class="profile-pill">
+
+                        🎯 Goal:
+
+                        <strong>
+                            {{ user.goal or "Healthy Lifestyle" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="profile-pill">
+
+                        🥗 Diet:
+
+                        <strong>
+                            {{ user.diet or "Not Set" }}
+                        </strong>
+
+                    </div>
+
+
+                    {% if user.grocery_budget %}
+
+                    <div class="profile-pill">
+
+                        💰 Budget:
+
+                        <strong>
+                            ₹{{ user.grocery_budget }}
+                        </strong>
+
+                    </div>
+
+                    {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 GENERATOR
+            ================================================== -->
+
+            <section class="generator-box">
+
+
+                <div class="generator-title">
+
+                    <div class="generator-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Generate Your AI Meal Plan
+                        </h2>
+
+                        <p>
+                            AI will create meals, recipes and nutrition
+                            details specifically for you.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('mealplanner') }}"
+                    class="planner-form"
+                    id="plannerForm"
+                >
+
+
+                    <!-- GOAL -->
+
+                    <div class="form-group">
+
+                        <label>
+                            🎯 YOUR GOAL
+                        </label>
+
+                        <select name="goal" required>
+
+                            <option value="Weight Loss"
+                                {% if selected_goal == "Weight Loss" %}selected{% endif %}>
+                                Weight Loss
+                            </option>
+
+                            <option value="Weight Gain"
+                                {% if selected_goal == "Weight Gain" %}selected{% endif %}>
+                                Weight Gain
+                            </option>
+
+                            <option value="Muscle Gain"
+                                {% if selected_goal == "Muscle Gain" %}selected{% endif %}>
+                                Muscle Gain
+                            </option>
+
+                            <option value="Healthy Lifestyle"
+                                {% if selected_goal == "Healthy Lifestyle" %}selected{% endif %}>
+                                Healthy Lifestyle
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DIET -->
+
+                    <div class="form-group">
+
+                        <label>
+                            🥗 YOUR DIET
+                        </label>
+
+                        <select name="diet" required>
+
+                            <option value="Vegetarian"
+                                {% if selected_diet == "Vegetarian" %}selected{% endif %}>
+                                Vegetarian
+                            </option>
+
+                            <option value="Non-Vegetarian"
+                                {% if selected_diet == "Non-Vegetarian" %}selected{% endif %}>
+                                Non-Vegetarian
+                            </option>
+
+                            <option value="Eggetarian"
+                                {% if selected_diet == "Eggetarian" %}selected{% endif %}>
+                                Eggetarian
+                            </option>
+
+                            <option value="Vegan"
+                                {% if selected_diet == "Vegan" %}selected{% endif %}>
+                                Vegan
+                            </option>
+
+                            <option value="Jain"
+                                {% if selected_diet == "Jain" %}selected{% endif %}>
+                                Jain
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BUDGET -->
+
+                    <div class="form-group">
+
+                        <label>
+                            💰 DAILY BUDGET
+                        </label>
+
+                        <input
+                            type="number"
+                            name="budget"
+                            min="50"
+                            step="10"
+                            value="{{ selected_budget or user.grocery_budget or 250 }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="generate-btn"
+                        id="generateBtn"
+                    >
+
+                        ✨ Generate AI Plan
+
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            {% if error %}
+
+            <div class="error-box">
+
+                ⚠️ {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 GENERATED MEALS
+            ================================================== -->
+
+            {% if meal_plan %}
+
+            <div class="plan-heading">
+
+                <div>
+
+                    <h2>
+                        🍽️ Your AI Meal Plan
+                    </h2>
+
+                    <p>
+                        Every meal includes its recipe and complete
+                        nutrition information.
+                    </p>
+
+                </div>
+
+
+                <div class="ai-badge">
+                    ✓ AI GENERATED
+                </div>
+
+            </div>
+
+
+            <!-- MEAL GRID -->
+
+            <section class="meal-grid">
+
+
+                {% for meal in meal_plan %}
+
+                {% set nutrition = meal.nutrition or {} %}
+
+
+                <article class="meal-card">
+
+
+                    <!-- MEAL HEADER -->
+
+                    <div class="meal-header">
+
+                        <div class="meal-type">
+                            {{ meal.type|upper }}
+                        </div>
+
+
+                        <div class="meal-name">
+                            {{ meal.food }}
+                        </div>
+
+
+                        {% if meal.description %}
+
+                        <div class="meal-description">
+                            {{ meal.description }}
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- NUTRITION -->
+
+                    <div class="nutrition-row">
+
+
+                        <div class="nutrition-mini">
+
+                            <span>
+                                CALORIES
+                            </span>
+
+                            <strong>
+                                🔥 {{ nutrition.calories|default(0) }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="nutrition-mini">
+
+                            <span>
+                                PROTEIN
+                            </span>
+
+                            <strong>
+                                💪 {{ nutrition.protein|default(0) }}g
+                            </strong>
+
+                        </div>
+
+
+                        <div class="nutrition-mini">
+
+                            <span>
+                                CARBS
+                            </span>
+
+                            <strong>
+                                🌾 {{ nutrition.carbs|default(0) }}g
+                            </strong>
+
+                        </div>
+
+
+                        <div class="nutrition-mini">
+
+                            <span>
+                                FAT
+                            </span>
+
+                            <strong>
+                                🥑 {{ nutrition.fat|default(0) }}g
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RECIPE -->
+
+                    <div class="recipe-section">
+
+
+                        <div class="recipe-title">
+                            👨‍🍳 Complete Recipe
+                        </div>
+
+
+                        <!-- INGREDIENTS -->
+
+                        <div class="recipe-block">
+
+                            <h4>
+                                🥕 Ingredients
+                            </h4>
+
+
+                            <div class="ingredients">
+
+                                {% for ingredient in meal.ingredients %}
+
+                                <span class="ingredient">
+                                    {{ ingredient }}
+                                </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ADD TO GROCERY -->
+
+                    <div class="grocery-action">
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('add_meal_ingredients') }}"
+                        >
+
+                            {% for ingredient in meal.ingredients %}
+
+                            <input
+                                type="hidden"
+                                name="ingredients"
+                                value="{{ ingredient }}"
+                            >
+
+                            {% endfor %}
+
+
+                            <button
+                                type="submit"
+                                class="add-grocery-btn"
+                            >
+
+                                <span>🛒</span>
+
+                                Add Ingredients to Grocery List
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- INSTRUCTIONS -->
+
+                    <div class="recipe-section">
+
+                        <div class="recipe-block">
+
+                            <h4>
+                                🍳 Cooking Instructions
+                            </h4>
+
+                            <div class="instructions">
+
+                                <ol>
+
+                                    {% for step in meal.instructions %}
+
+                                    <li>
+                                        {{ step }}
+                                    </li>
+
+                                    {% endfor %}
+
+                                </ol>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+
+                    <div class="meal-footer">
+
+
+                        <div class="cost">
+
+                            💰 ₹{{ meal.cost|default(0) }}
+
+                        </div>
+
+
+                        {% if meal.type in ["Breakfast", "Lunch", "Snack", "Dinner"] %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('complete_meal', meal_type=meal.type) }}"
+                        >
+
+                            <button
+                                type="submit"
+                                class="complete-btn"
+                            >
+
+                                ✓ Complete Meal
+
+                            </button>
+
+                        </form>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </article>
+
+
+                {% endfor %}
+
+            </section>
+
+
+            {% else %}
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================== -->
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🥗
+                </div>
+
+
+                <h3>
+                    Ready to build your meal plan?
+                </h3>
+
+
+                <p>
+                    Choose your goal, diet and budget above.
+                    NutriAI will create your complete meals,
+                    recipes and nutrition information using AI.
+                </p>
+
+            </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+    const plannerForm = document.getElementById("plannerForm");
+    const generateBtn = document.getElementById("generateBtn");
+
+    if (plannerForm && generateBtn) {
+
+        plannerForm.addEventListener("submit", function () {
+
+            generateBtn.classList.add("loading");
+
+            generateBtn.innerHTML = "✨";
+
+            generateBtn.disabled = true;
+
+        });
+
+    }
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | NutriAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        :root {
+            --bg: #061710;
+            --bg2: #0a2117;
+            --card: rgba(20, 55, 39, .72);
+            --green: #9be765;
+            --green2: #72c749;
+            --text: #f4f8f5;
+            --muted: #81968b;
+            --border: rgba(255,255,255,.075);
+        }
+
+        body {
+            min-height: 100vh;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at 85% 5%,
+                    rgba(155,231,101,.12),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 5% 90%,
+                    rgba(65,145,90,.12),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #04120c,
+                    #071b12 55%,
+                    #04140d
+                );
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            width: 400px;
+            height: 400px;
+
+            top: 15%;
+            right: 12%;
+
+            border-radius: 50%;
+
+            background: rgba(149,213,91,.035);
+
+            filter: blur(90px);
+
+            pointer-events: none;
+
+            z-index: -1;
+        }
+
+
+        /* =====================================================
+           LAYOUT
+        ===================================================== */
+
+        .container {
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 255px;
+
+            padding: 25px 17px;
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #102d21 0%,
+                    #0a2118 55%,
+                    #06150f 100%
+                );
+
+            border-right:
+                1px solid rgba(149,213,91,.11);
+
+            z-index: 1000;
+        }
+
+
+        /* LOGO */
+
+        .logo {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 5px 9px 30px;
+        }
+
+        .logo-icon {
+
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(155,231,101,.16),
+                    rgba(155,231,101,.04)
+                );
+
+            border:
+                1px solid rgba(155,231,101,.20);
+
+            font-size: 23px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.18);
+        }
+
+        .logo h2 {
+
+            color: var(--green);
+
+            font-size: 22px;
+
+            font-weight: 800;
+
+            letter-spacing: -.5px;
+        }
+
+        .logo small {
+
+            display: block;
+
+            color: #698276;
+
+            font-size: 9px;
+
+            margin-top: 2px;
+
+            letter-spacing: .6px;
+        }
+
+
+        /* NAVIGATION */
+
+        .sidebar-nav {
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+        .nav-title {
+
+            color: #5f796c;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            padding: 12px 13px 7px;
+        }
+
+        .sidebar-nav a {
+
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+
+            padding: 12px 13px;
+
+            border-radius: 13px;
+
+            color: #9db1a7;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            transition: .25s ease;
+        }
+
+        .sidebar-nav a:hover {
+
+            color: #d8f4c3;
+
+            background:
+                rgba(149,213,91,.07);
+
+            transform:
+                translateX(3px);
+        }
+
+        .sidebar-nav a.active {
+
+            color: #b9ed86;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(149,213,91,.19),
+                    rgba(149,213,91,.045)
+                );
+
+            box-shadow:
+                inset 3px 0 0 var(--green),
+                0 7px 22px rgba(0,0,0,.12);
+        }
+
+        .nav-icon {
+
+            width: 24px;
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =====================================================
+           SIDEBAR BOTTOM
+        ===================================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .mini-tip {
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 13px;
+
+            margin: 0 3px 13px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(149,213,91,.09),
+                    rgba(149,213,91,.025)
+                );
+
+            border:
+                1px solid rgba(149,213,91,.10);
+        }
+
+        .tip-icon {
+
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background:
+                rgba(149,213,91,.08);
+
+            font-size: 17px;
+        }
+
+        .mini-tip strong {
+
+            display: block;
+
+            color: #b9e98d;
+
+            font-size: 10px;
+        }
+
+        .mini-tip p {
+
+            color: #71877c;
+
+            font-size: 9px;
+
+            margin-top: 3px;
+
+            line-height: 1.4;
+        }
+
+        .logout {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 14px 13px 8px;
+
+            color: #91a59b;
+
+            text-decoration: none;
+
+            border-top:
+                1px solid rgba(255,255,255,.06);
+
+            font-size: 13px;
+
+            transition: .25s;
+        }
+
+        .logout:hover {
+            color: #ff9696;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+
+            margin-left: 255px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            min-height: 82px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 18px 40px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.055);
+
+            background:
+                rgba(4,18,12,.60);
+
+            backdrop-filter:
+                blur(20px);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+        }
+
+        .topbar h1 {
+
+            font-size: 21px;
+
+            font-weight: 800;
+        }
+
+        .topbar p {
+
+            color: #71877c;
+
+            font-size: 11px;
+
+            margin-top: 4px;
+        }
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page {
+
+            width: min(1050px, 92%);
+
+            margin: auto;
+
+            padding: 40px 0 70px;
+        }
+
+
+        /* =====================================================
+           PROFILE HERO
+        ===================================================== */
+
+        .profile-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 42px;
+
+            border-radius: 28px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(25,61,44,.88),
+                    rgba(8,28,19,.94)
+                );
+
+            border:
+                1px solid rgba(149,213,91,.13);
+
+            box-shadow:
+                0 25px 80px rgba(0,0,0,.25);
+
+            backdrop-filter:
+                blur(20px);
+        }
+
+        .profile-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            top: -190px;
+            right: -130px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(149,213,91,.08);
+
+            filter: blur(55px);
+
+            pointer-events: none;
+        }
+
+        .profile-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            bottom: -100px;
+            left: -90px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(60,140,90,.07);
+
+            filter: blur(40px);
+        }
+
+
+        /* =====================================================
+           PROFILE HEADER
+        ===================================================== */
+
+        .profile-header {
+
+            position: relative;
+
+            z-index: 2;
+
+            text-align: center;
+
+            padding-bottom: 35px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.06);
+        }
+
+        .profile-image {
+
+            width: 105px;
+            height: 105px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #a9eb70,
+                    #6fc748
+                );
+
+            border:
+                5px solid rgba(149,213,91,.10);
+
+            box-shadow:
+                0 15px 40px rgba(110,199,73,.18);
+
+            font-size: 45px;
+        }
+
+        .profile-header h2 {
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            letter-spacing: -.5px;
+        }
+
+        .email {
+
+            color: #71877c;
+
+            font-size: 12px;
+
+            margin-top: 5px;
+        }
+
+        .profile-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-top: 14px;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            color: var(--green);
+
+            background:
+                rgba(149,213,91,.06);
+
+            border:
+                1px solid rgba(149,213,91,.12);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: .5px;
+        }
+
+        .status-dot {
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 10px rgba(149,213,91,.7);
+        }
+
+
+        /* =====================================================
+           SECTION TITLE
+        ===================================================== */
+
+        .section-title {
+
+            position: relative;
+
+            z-index: 2;
+
+            margin-top: 30px;
+
+            margin-bottom: 16px;
+
+            display: flex;
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .section-title h2 {
+
+            font-size: 17px;
+
+            font-weight: 800;
+        }
+
+        .section-title p {
+
+            color: #687f74;
+
+            font-size: 10px;
+
+            margin-top: 3px;
+        }
+
+
+        /* =====================================================
+           PROFILE DETAILS
+        ===================================================== */
+
+        .profile-details {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 13px;
+        }
+
+        .detail {
+
+            position: relative;
+
+            padding: 19px;
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid rgba(255,255,255,.06);
+
+            transition: .25s;
+        }
+
+        .detail:hover {
+
+            transform:
+                translateY(-3px);
+
+            border-color:
+                rgba(149,213,91,.17);
+
+            background:
+                rgba(149,213,91,.045);
+
+            box-shadow:
+                0 12px 30px rgba(0,0,0,.12);
+        }
+
+        .detail-icon {
+
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 11px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(149,213,91,.07);
+
+            font-size: 16px;
+        }
+
+        .detail strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #82988d;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            letter-spacing: .7px;
+
+            text-transform: uppercase;
+        }
+
+        .detail span {
+
+            color: #f0f5f2;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           EDIT BUTTON
+        ===================================================== */
+
+        .edit-area {
+
+            position: relative;
+
+            z-index: 2;
+
+            text-align: center;
+
+            margin-top: 28px;
+        }
+
+        .edit-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 12px 23px;
+
+            border-radius: 13px;
+
+            text-decoration: none;
+
+            color: #07170e;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #a9eb70,
+                    #70c749
+                );
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 12px 30px rgba(112,199,73,.15);
+
+            transition: .3s;
+        }
+
+        .edit-btn:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 17px 40px rgba(112,199,73,.27);
+        }
+
+
+        /* =====================================================
+           EDIT FORM
+        ===================================================== */
+
+        .edit-form {
+
+            position: relative;
+
+            z-index: 2;
+
+            margin-top: 30px;
+
+            padding-top: 28px;
+
+            border-top:
+                1px solid rgba(255,255,255,.06);
+        }
+
+        .edit-form h2 {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 20px;
+        }
+
+        .edit-form-subtitle {
+
+            color: #70867b;
+
+            font-size: 10px;
+
+            margin-top: -13px;
+
+            margin-bottom: 22px;
+        }
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 16px;
+        }
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group label {
+
+            margin-bottom: 8px;
+
+            color: #a7b8b0;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: .4px;
+        }
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            height: 48px;
+
+            padding: 0 14px;
+
+            border-radius: 12px;
+
+            outline: none;
+
+            color: white;
+
+            background:
+                rgba(2,15,10,.68);
+
+            border:
+                1px solid rgba(255,255,255,.075);
+
+            font-size: 11px;
+
+            transition: .25s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color:
+                rgba(149,213,91,.55);
+
+            box-shadow:
+                0 0 0 4px rgba(149,213,91,.055);
+        }
+
+        .form-group select option {
+
+            background: #0b291c;
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           FORM BUTTONS
+        ===================================================== */
+
+        .form-buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+
+            min-width: 130px;
+
+            height: 45px;
+
+            padding: 0 20px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            transition: .25s;
+        }
+
+        .save-btn {
+
+            border: none;
+
+            color: #07170e;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #a9eb70,
+                    #70c749
+                );
+
+            box-shadow:
+                0 10px 25px rgba(112,199,73,.13);
+        }
+
+        .save-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 14px 30px rgba(112,199,73,.22);
+        }
+
+        .cancel-btn {
+
+            border:
+                1px solid rgba(255,255,255,.08);
+
+            background:
+                rgba(255,255,255,.035);
+
+            color: #aabbb3;
+        }
+
+        .cancel-btn:hover {
+
+            color: white;
+
+            background:
+                rgba(255,255,255,.07);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+
+                width: 76px;
+
+                padding:
+                    22px 10px;
+            }
+
+            .logo {
+
+                justify-content: center;
+
+                padding:
+                    4px 0 25px;
+            }
+
+            .logo > div:last-child,
+            .nav-title,
+            .mini-tip,
+            .sidebar-nav a span:last-child,
+            .logout label {
+
+                display: none;
+            }
+
+            .sidebar-nav a,
+            .logout {
+
+                justify-content: center;
+
+                padding:
+                    13px 8px;
+            }
+
+            .main {
+
+                margin-left: 76px;
+            }
+
+            .topbar {
+
+                padding:
+                    18px 25px;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .page {
+
+                width: 92%;
+
+                padding-top: 28px;
+            }
+
+            .topbar {
+
+                padding:
+                    16px 20px;
+            }
+
+            .topbar h1 {
+
+                font-size: 18px;
+            }
+
+            .topbar p {
+
+                display: none;
+            }
+
+            .profile-card {
+
+                padding: 27px 20px;
+
+                border-radius: 22px;
+            }
+
+            .profile-details,
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header h2 {
+
+                font-size: 24px;
+            }
+
+            .form-buttons {
+
+                flex-direction: column;
+            }
+
+            .save-btn,
+            .cancel-btn {
+
+                width: 100%;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+
+            .sidebar {
+
+                width: 62px;
+            }
+
+            .main {
+
+                margin-left: 62px;
+            }
+
+            .page {
+
+                width: 94%;
+            }
+
+            .profile-image {
+
+                width: 90px;
+                height: 90px;
+
+                font-size: 38px;
+            }
+
+            .detail {
+
+                padding: 16px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🌿
+        </div>
+
+        <div class="brand-text">
+            <h2>Nutri<span>AI</span></h2>
+            <small>SMART NUTRITION</small>
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="{{ url_for('dashboard') }}" class="nav-item">
+            <span>⌂</span>
+            <label>Dashboard</label>
+        </a>
+
+        <a href="{{ url_for('mealplanner') }}" class="nav-item">
+            <span>🍽</span>
+            <label>Meal Planner</label>
+        </a>
+
+        <a href="{{ url_for('nutrition') }}" class="nav-item">
+            <span>🥗</span>
+            <label>Nutrition</label>
+        </a>
+
+        <a href="{{ url_for('recipe') }}" class="nav-item">
+            <span>🤖</span>
+            <label>AI Recipes</label>
+        </a>
+
+        <a href="{{ url_for('grocery') }}" class="nav-item">
+            <span>🛒</span>
+            <label>Grocery</label>
+        </a>
+
+        <a href="{{ url_for('report') }}" class="nav-item">
+            <span>📊</span>
+            <label>My Report</label>
+        </a>
+
+        <a href="{{ url_for('profile') }}" class="nav-item active">
+            <span>👤</span>
+            <label>Profile</label>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="mini-tip">
+            <div class="tip-icon">✨</div>
+
+            <div>
+                <strong>Daily Tip</strong>
+                <p>Stay hydrated and eat mindfully.</p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <span>↪</span>
+            <label>Logout</label>
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    👤 My Profile
+                </h1>
+
+                <p>
+                    Manage your personal information and health goals.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE -->
+
+        <div class="page">
+
+
+            <!-- =================================================
+                 PROFILE CARD
+            ================================================== -->
+
+            <div class="profile-card">
+
+
+                <!-- PROFILE HEADER -->
+
+                <div class="profile-header">
+
+
+                    <div class="profile-image">
+                        👩
+                    </div>
+
+
+                    <h2>
+                        {{ user.name }}
+                    </h2>
+
+
+                    <p class="email">
+                        {{ user.email }}
+                    </p>
+
+
+                    <div class="profile-status">
+
+                        <span class="status-dot"></span>
+
+                        NUTRIAI MEMBER
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     VIEW PROFILE
+                ================================================== -->
+
+                {% if not edit %}
+
+
+                <div class="section-title">
+
+                    <div>
+
+                        <h2>
+                            Your Information
+                        </h2>
+
+                        <p>
+                            Your current nutrition and fitness profile
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-details">
+
+
+                    <!-- AGE -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            🎂
+                        </div>
+
+                        <strong>
+                            Age
+                        </strong>
+
+                        <span>
+
+                            {{ user.age or "Not set" }}
+
+                            {% if user.age %}
+                                Years
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- WEIGHT -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            ⚖️
+                        </div>
+
+                        <strong>
+                            Weight
+                        </strong>
+
+                        <span>
+
+                            {{ user.weight or "Not set" }}
+
+                            {% if user.weight %}
+                                kg
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- HEIGHT -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            📏
+                        </div>
+
+                        <strong>
+                            Height
+                        </strong>
+
+                        <span>
+
+                            {{ user.height or "Not set" }}
+
+                            {% if user.height %}
+                                cm
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- GOAL -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            🎯
+                        </div>
+
+                        <strong>
+                            Health Goal
+                        </strong>
+
+                        <span>
+                            {{ user.goal or "Not set" }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- DIET -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            🥗
+                        </div>
+
+                        <strong>
+                            Diet
+                        </strong>
+
+                        <span>
+                            {{ user.diet or "Not set" }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- WATER -->
+
+                    <div class="detail">
+
+                        <div class="detail-icon">
+                            💧
+                        </div>
+
+                        <strong>
+                            Daily Water Goal
+                        </strong>
+
+                        <span>
+                            3 Litres
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- EDIT BUTTON -->
+
+                <div class="edit-area">
+
+                    <a
+                        href="{{ url_for('profile', edit='true') }}"
+                        class="edit-btn"
+                    >
+
+                        ✏️ Edit Profile
+
+                    </a>
+
+                </div>
+
+
+                {% else %}
+
+
+                <!-- =================================================
+                     EDIT PROFILE
+                ================================================== -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('profile') }}"
+                    class="edit-form"
+                >
+
+
+                    <h2>
+                        ✏️ Edit Your Information
+                    </h2>
+
+
+                    <p class="edit-form-subtitle">
+                        Update your details to keep your NutriAI
+                        recommendations personalized.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- NAME -->
+
+                        <div class="form-group">
+
+                            <label>
+                                FULL NAME
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                value="{{ user.name }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- AGE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                AGE
+                            </label>
+
+                            <input
+                                type="number"
+                                name="age"
+                                value="{{ user.age or '' }}"
+                                min="1"
+                                max="120"
+                            >
+
+                        </div>
+
+
+                        <!-- HEIGHT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                HEIGHT (CM)
+                            </label>
+
+                            <input
+                                type="number"
+                                name="height"
+                                value="{{ user.height or '' }}"
+                                min="50"
+                                max="250"
+                            >
+
+                        </div>
+
+
+                        <!-- WEIGHT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                WEIGHT (KG)
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                name="weight"
+                                value="{{ user.weight or '' }}"
+                                min="1"
+                                max="300"
+                            >
+
+                        </div>
+
+
+                        <!-- DIET -->
+
+                        <div class="form-group">
+
+                            <label>
+                                DIET
+                            </label>
+
+                            <select name="diet">
+
+
+                                <option value="Vegetarian"
+                                    {% if user.diet == "Vegetarian" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Vegetarian
+
+                                </option>
+
+
+                                <option value="Non-Vegetarian"
+                                    {% if user.diet == "Non-Vegetarian" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Non-Vegetarian
+
+                                </option>
+
+
+                                <option value="Eggetarian"
+                                    {% if user.diet == "Eggetarian" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Eggetarian
+
+                                </option>
+
+
+                                <option value="Vegan"
+                                    {% if user.diet == "Vegan" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Vegan
+
+                                </option>
+
+
+                                <option value="Jain"
+                                    {% if user.diet == "Jain" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Jain
+
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- GOAL -->
+
+                        <div class="form-group">
+
+                            <label>
+                                HEALTH GOAL
+                            </label>
+
+                            <select name="goal">
+
+
+                                <option value="Weight Loss"
+                                    {% if user.goal == "Weight Loss" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Weight Loss
+
+                                </option>
+
+
+                                <option value="Weight Gain"
+                                    {% if user.goal == "Weight Gain" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Weight Gain
+
+                                </option>
+
+
+                                <option value="Muscle Gain"
+                                    {% if user.goal == "Muscle Gain" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Muscle Gain
+
+                                </option>
+
+
+                                <option value="Healthy Lifestyle"
+                                    {% if user.goal == "Healthy Lifestyle" %}
+                                    selected
+                                    {% endif %}>
+
+                                    Healthy Lifestyle
+
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div class="form-buttons">
+
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                        >
+
+                            💾 Save Changes
+
+                        </button>
+
+
+                        <a
+                            href="{{ url_for('profile') }}"
+                            class="cancel-btn"
+                        >
+
+                            Cancel
+
+                        </a>
+
+
+                    </div>
+
+
+                </form>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+
+</html>
+

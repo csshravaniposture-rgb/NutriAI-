@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | NutriAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/login.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Background Decorations -->
+    <div class="bg-circle circle-one"></div>
+    <div class="bg-circle circle-two"></div>
+    <div class="bg-circle circle-three"></div>
+
+    <div class="login-wrapper">
+
+        <!-- Left Side -->
+        <div class="login-info">
+
+            <div class="brand">
+                <div class="logo">🥑</div>
+                <span>Nutri<span>AI</span></span>
+            </div>
+
+            <div class="info-content">
+                <p class="small-title">YOUR PERSONAL AI NUTRITION ASSISTANT</p>
+
+                <h1>
+                    Eat Better.<br>
+                    <span>Live Healthier.</span>
+                </h1>
+
+                <p class="description">
+                    Your smart companion for personalized meals,
+                    nutrition tracking, recipes and budget-friendly
+                    grocery planning.
+                </p>
+
+                <div class="benefits">
+
+                    <div class="benefit">
+                        <div class="benefit-icon">🥗</div>
+                        <div>
+                            <h3>Personalized Meals</h3>
+                            <p>Meals designed around your goals.</p>
+                        </div>
+                    </div>
+
+                    <div class="benefit">
+                        <div class="benefit-icon">🤖</div>
+                        <div>
+                            <h3>AI Powered</h3>
+                            <p>Smart nutrition recommendations.</p>
+                        </div>
+                    </div>
+
+                    <div class="benefit">
+                        <div class="benefit-icon">💰</div>
+                        <div>
+                            <h3>Budget Friendly</h3>
+                            <p>Healthy choices within your budget.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Login Card -->
+        <div class="login-section">
+
+            <div class="login-card">
+
+                <div class="mobile-brand">
+                    <div class="logo">🥑</div>
+                    <span>Nutri<span>AI</span></span>
+                </div>
+
+                <div class="welcome">
+                    <h2>Welcome Back! 👋</h2>
+                    <p>Login to continue your healthy journey.</p>
+                </div>
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-message">
+                            ⚠️ {{ messages[0] }}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+
+                <form method="POST" action="{{ url_for('login') }}">
+
+                    <!-- Email -->
+                    <div class="input-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <div class="input-box">
+                            <span class="input-icon">✉</span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="input-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="input-box">
+
+                            <span class="input-icon">🔒</span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword()">
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Remember -->
+                    <div class="login-options">
+
+                        <label class="remember">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+
+                        <a href="#" class="forgot">
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+                    <!-- Login Button -->
+                    <button type="submit" class="login-btn">
+                        <span>Login Securely</span>
+                        <span class="arrow">→</span>
+                    </button>
+
+                </form>
+
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+
+                <p class="register-text">
+                    Don't have an account?
+                    <a href="{{ url_for('register') }}">
+                        Create Account
+                    </a>
+                </p>
+
+                <a href="{{ url_for('home') }}" class="home-link">
+                    ← Back to Home
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const button =
+                document.querySelector(".password-toggle");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                button.textContent = "🙈";
+
+            } else {
+
+                password.type = "password";
+                button.textContent = "👁";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

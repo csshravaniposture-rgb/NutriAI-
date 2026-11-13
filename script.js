@@ -1,0 +1,1 @@
+console.log("NutriAI Loaded Successfully");

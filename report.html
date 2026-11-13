@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports | NutriAI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background:
+                radial-gradient(circle at 85% 10%, rgba(149, 213, 91, 0.10), transparent 28%),
+                radial-gradient(circle at 10% 90%, rgba(68, 140, 83, 0.10), transparent 30%),
+                #061a12;
+            color: #f2f7f2;
+            min-height: 100vh;
+        }
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 255px;
+            height: 100vh;
+            padding: 25px 17px;
+            background:
+                linear-gradient(180deg, #123524 0%, #0a2419 55%, #071910 100%);
+            border-right: 1px solid rgba(149, 213, 91, 0.12);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 10px 30px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: rgba(149, 213, 91, 0.12);
+            border: 1px solid rgba(149, 213, 91, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 25px rgba(149, 213, 91, 0.08);
+        }
+
+        .logo h2 {
+            color: #a8e96b;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            display: block;
+            color: #71927d;
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            margin-top: 1px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-title {
+            color: #668271;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            padding: 0 13px 10px;
+        }
+
+        .report-title {
+            margin-top: 24px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: #9db3a4;
+            padding: 12px 13px;
+            margin: 4px 0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-nav a:hover {
+            color: #dff5d1;
+            background: rgba(149, 213, 91, 0.08);
+            transform: translateX(3px);
+        }
+
+        .sidebar-nav a.active {
+            color: #b8ef82;
+            background:
+                linear-gradient(90deg,
+                rgba(149, 213, 91, 0.17),
+                rgba(149, 213, 91, 0.05));
+            border: 1px solid rgba(149, 213, 91, 0.13);
+            box-shadow: inset 3px 0 0 #95d55b;
+        }
+
+        .nav-icon {
+            width: 24px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .mini-tip {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            padding: 14px;
+            border-radius: 15px;
+            background: rgba(149, 213, 91, 0.07);
+            border: 1px solid rgba(149, 213, 91, 0.10);
+            margin-bottom: 12px;
+        }
+
+        .tip-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(149, 213, 91, 0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mini-tip strong {
+            display: block;
+            color: #c8eeb0;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .mini-tip p {
+            color: #718b7a;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .logout {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #8da397;
+            padding: 12px 13px;
+            border-radius: 11px;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        .logout:hover {
+            color: #ff9b9b;
+            background: rgba(255, 90, 90, 0.07);
+        }
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+            padding: 38px 45px 60px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .topbar h1 {
+            font-size: 31px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            color: #f2f7f2;
+            margin-bottom: 7px;
+        }
+
+        .topbar p {
+            color: #7f9989;
+            font-size: 14px;
+        }
+
+        /* =========================================
+           STAT CARDS
+        ========================================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            padding: 23px;
+            min-height: 135px;
+            border-radius: 19px;
+
+            background:
+                linear-gradient(145deg,
+                rgba(255,255,255,0.055),
+                rgba(255,255,255,0.018));
+
+            border: 1px solid rgba(149, 213, 91, 0.12);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            right: -30px;
+            top: -30px;
+            border-radius: 50%;
+            background: rgba(149, 213, 91, 0.07);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(149, 213, 91, 0.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+        }
+
+        .card h3 {
+            position: relative;
+            color: #91a99a;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            position: relative;
+            color: #b5eb7d;
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           WEEKLY PROGRESS
+        ========================================= */
+
+        .meal {
+            padding: 28px;
+            border-radius: 21px;
+            margin-bottom: 25px;
+
+            background:
+                linear-gradient(145deg,
+                rgba(255,255,255,0.055),
+                rgba(255,255,255,0.018));
+
+            border: 1px solid rgba(149, 213, 91, 0.12);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.20);
+        }
+
+        .meal h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #eef7ed;
+        }
+
+        .meal-box {
+            padding: 22px;
+            border-radius: 17px;
+            background: rgba(3, 19, 12, 0.48);
+            border: 1px solid rgba(149, 213, 91, 0.08);
+        }
+
+        .progress-item {
+            margin-bottom: 21px;
+        }
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+
+        .progress-header p {
+            color: #a9bbae;
+            font-size: 13px;
+        }
+
+        .progress-percent {
+            color: #9fdf69;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress {
+            height: 9px;
+            width: 100%;
+            background: #15291f;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+            background:
+                linear-gradient(90deg, #5b9f4e, #a8e96b);
+            box-shadow: 0 0 14px rgba(149, 213, 91, 0.25);
+            transition: width 0.8s ease;
+        }
+
+        /* =========================================
+           AI SUMMARY
+        ========================================= */
+
+        .tip {
+            position: relative;
+            overflow: hidden;
+            padding: 28px;
+            border-radius: 21px;
+
+            background:
+                radial-gradient(circle at 90% 20%,
+                rgba(149, 213, 91, 0.13),
+                transparent 35%),
+                linear-gradient(145deg,
+                rgba(149, 213, 91, 0.08),
+                rgba(255,255,255,0.025));
+
+            border: 1px solid rgba(149, 213, 91, 0.17);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+        }
+
+        .tip::after {
+            content: "✦";
+            position: absolute;
+            right: 35px;
+            top: 18px;
+            font-size: 70px;
+            color: rgba(149, 213, 91, 0.06);
+        }
+
+        .tip h2 {
+            position: relative;
+            z-index: 1;
+            font-size: 20px;
+            margin-bottom: 13px;
+            color: #c8efa8;
+        }
+
+        .tip p {
+            position: relative;
+            z-index: 1;
+            max-width: 850px;
+            color: #9caf9f;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 760px) {
+
+            .sidebar {
+                width: 75px;
+                padding: 20px 10px;
+            }
+
+            .logo {
+                justify-content: center;
+                padding: 4px 0 25px;
+            }
+
+            .logo > div:last-child,
+            .sidebar-nav a span:last-child,
+            .nav-title,
+            .mini-tip,
+            .logout label {
+                display: none;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+                padding: 13px 8px;
+            }
+
+            .sidebar-nav a.active {
+                box-shadow: none;
+            }
+
+            .logout {
+                justify-content: center;
+            }
+
+            .main {
+                margin-left: 75px;
+                padding: 25px 18px 40px;
+            }
+
+            .topbar h1 {
+                font-size: 25px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .card h2 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 22px;
+            }
+
+            .meal,
+            .tip {
+                padding: 20px;
+            }
+
+            .meal-box {
+                padding: 17px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🌿
+        </div>
+
+        <div class="brand-text">
+            <h2>Nutri<span>AI</span></h2>
+            <small>SMART NUTRITION</small>
+        </div>
+
+    </div>
+
+
+    <nav class="navigation">
+
+        <a href="{{ url_for('dashboard') }}" class="nav-item">
+            <span>⌂</span>
+            <label>Dashboard</label>
+        </a>
+
+        <a href="{{ url_for('mealplanner') }}" class="nav-item">
+            <span>🍽</span>
+            <label>Meal Planner</label>
+        </a>
+
+        <a href="{{ url_for('nutrition') }}" class="nav-item">
+            <span>🥗</span>
+            <label>Nutrition</label>
+        </a>
+
+        <a href="{{ url_for('recipe') }}" class="nav-item">
+            <span>🤖</span>
+            <label>AI Recipes</label>
+        </a>
+
+        <a href="{{ url_for('grocery') }}" class="nav-item">
+            <span>🛒</span>
+            <label>Grocery</label>
+        </a>
+
+        <a href="{{ url_for('report') }}" class="nav-item active">
+            <span>📊</span>
+            <label>My Report</label>
+        </a>
+
+        <a href="{{ url_for('profile') }}" class="nav-item">
+            <span>👤</span>
+            <label>Profile</label>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="mini-tip">
+            <div class="tip-icon">✨</div>
+
+            <div>
+                <strong>Daily Tip</strong>
+                <p>Stay hydrated and eat mindfully.</p>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            <span>↪</span>
+            <label>Logout</label>
+        </a>
+
+    </div>
+
+</aside>
+
+
+
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main">
+
+
+        <!-- Header -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    📊 Health Reports
+                </h1>
+
+                <p>
+                    Your nutrition progress and health insights.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================
+             STAT CARDS
+        ========================================== -->
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <h3>
+                    🔥 Calories
+                </h3>
+
+                <h2>
+                    1820 kcal
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    💧 Water
+                </h3>
+
+                <h2>
+                    2.3 L
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    ⚖️ Weight
+                </h3>
+
+                <h2>
+                    64 kg
+                </h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    📏 BMI
+                </h3>
+
+                <h2>
+                    22.4
+                </h2>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================================
+             WEEKLY PROGRESS
+        ========================================== -->
+
+        <section class="meal">
+
+            <h2>
+                📈 Weekly Progress
+            </h2>
+
+
+            <div class="meal-box">
+
+
+                <div class="progress-item">
+
+                    <div class="progress-header">
+
+                        <p>
+                            Calories Goal
+                        </p>
+
+                        <span class="progress-percent">
+                            80%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-fill"
+                             style="width:80%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div class="progress-header">
+
+                        <p>
+                            Water Intake
+                        </p>
+
+                        <span class="progress-percent">
+                            70%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-fill"
+                             style="width:70%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div class="progress-header">
+
+                        <p>
+                            Protein Intake
+                        </p>
+
+                        <span class="progress-percent">
+                            90%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-fill"
+                             style="width:90%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div class="progress-header">
+
+                        <p>
+                            Exercise Goal
+                        </p>
+
+                        <span class="progress-percent">
+                            60%
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-fill"
+                             style="width:60%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             AI HEALTH SUMMARY
+        ========================================== -->
+
+        <section class="tip">
+
+            <h2>
+                🤖 AI Health Summary
+            </h2>
+
+            <p>
+
+                Great work! 🎉
+
+                Your calorie intake is within the recommended range.
+                Increase your water intake slightly and maintain regular
+                exercise to achieve your health goals.
+
+            </p>
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+</body>
+
+</html>
+

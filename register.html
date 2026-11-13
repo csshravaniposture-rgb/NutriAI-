@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Create Account | NutriAI</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/register.css') }}">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <div class="register-box">
+
+        <!-- LOGO -->
+
+        <h1>🥑 NutriAI</h1>
+
+        <h2>Create Your Account</h2>
+
+        <p>Start your healthy lifestyle journey today.</p>
+
+
+        <!-- ERROR MESSAGE -->
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                <div class="error-message">
+
+                    {% for message in messages %}
+
+                        <p>⚠️ {{ message }}</p>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- REGISTER FORM -->
+
+        <form action="{{ url_for('register') }}"
+              method="POST"
+              id="registerForm"
+              novalidate>
+
+
+            <!-- FULL NAME -->
+
+            <div class="input-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    minlength="2"
+                    maxlength="100"
+                    pattern="[A-Za-zÀ-ÿ\s]+"
+                    required>
+
+                <small class="field-error" id="nameError"></small>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@gmail.com"
+                    autocomplete="email"
+                    maxlength="120"
+                    required>
+
+                <small class="field-error" id="emailError"></small>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        maxlength="128"
+                        required>
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword('password', this)"
+                        aria-label="Show password">
+
+                        👁
+
+                    </button>
+
+                </div>
+
+                <!-- PASSWORD STRENGTH -->
+
+                <div class="password-strength">
+
+                    <div id="strengthBar"></div>
+
+                </div>
+
+                <small id="passwordStrength">
+                    Use at least 8 characters
+                </small>
+
+                <small class="field-error" id="passwordError"></small>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Re-enter your password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        maxlength="128"
+                        required>
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword('confirm_password', this)"
+                        aria-label="Show password">
+
+                        👁
+
+                    </button>
+
+                </div>
+
+                <small class="field-error" id="confirmPasswordError"></small>
+
+            </div>
+
+
+            <!-- AGE -->
+
+            <div class="input-group">
+
+                <label for="age">
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    placeholder="Enter your age"
+                    min="13"
+                    max="120"
+                    required>
+                <small class="field-error" id="ageError"></small>
+
+            </div>
+
+
+            <!-- HEIGHT -->
+
+            <div class="input-group">
+
+                <label for="height">
+                    Height (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="height"
+                    name="height"
+                    placeholder="Example: 165"
+                    min="50"
+                    max="250"
+                    step="1"
+                    required>
+
+                <small class="field-error" id="heightError"></small>
+
+            </div>
+
+
+            <!-- WEIGHT -->
+
+            <div class="input-group">
+
+                <label for="weight">
+                    Weight (kg)
+                </label>
+
+                <input
+                    type="number"
+                    id="weight"
+                    name="weight"
+                    placeholder="Example: 60"
+                    min="20"
+                    max="300"
+                    step="0.1"
+                    required>
+
+                <small class="field-error" id="weightError"></small>
+
+            </div>
+
+
+            <!-- DIET -->
+
+            <div class="input-group">
+
+                <label for="diet">
+                    Diet Preference
+                </label>
+
+                <select
+                    id="diet"
+                    name="diet"
+                    required>
+
+                    <option value="" disabled selected>
+                        Select your diet
+                    </option>
+
+                    <option value="Vegetarian">
+                        🥗 Vegetarian
+                    </option>
+
+                    <option value="Non-Vegetarian">
+                        🍗 Non-Vegetarian
+                    </option>
+
+                    <option value="Vegan">
+                        🌱 Vegan
+                    </option>
+
+                    <option value="Jain">
+                        🟢 Jain
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- FITNESS GOAL -->
+
+            <div class="input-group">
+
+                <label for="goal">
+                    Fitness Goal
+                </label>
+
+                <select
+                    id="goal"
+                    name="goal"
+                    required>
+
+                    <option value="" disabled selected>
+                        Select your goal
+                    </option>
+
+                    <option value="Weight Loss">
+                        ⚖️ Weight Loss
+                    </option>
+
+                    <option value="Weight Gain">
+                        📈 Weight Gain
+                    </option>
+
+                    <option value="Muscle Gain">
+                        💪 Muscle Gain
+                    </option>
+
+                    <option value="Healthy Lifestyle">
+                        🌿 Healthy Lifestyle
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TERMS -->
+
+            <div class="terms">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        required>
+
+                    I agree to the NutriAI
+                    <a href="#" onclick="return false;">
+                        Terms & Privacy Policy
+                    </a>
+
+                </label>
+
+                <small class="field-error" id="termsError"></small>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                id="registerButton">
+
+                Create Secure Account
+
+            </button>
+
+
+        </form>
+
+
+        <!-- LOGIN -->
+
+        <div class="bottom-text">
+
+            Already have an account?
+
+            <a href="{{ url_for('login') }}">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirm_password");
+
+const strengthBar = document.getElementById("strengthBar");
+const strengthText = document.getElementById("passwordStrength");
+
+
+/* ================= PASSWORD STRENGTH ================= */
+
+password.addEventListener("input", function () {
+
+    const value = password.value;
+
+    let strength = 0;
+
+    if (value.length >= 8)
+        strength++;
+
+    if (/[A-Z]/.test(value))
+        strength++;
+
+    if (/[a-z]/.test(value))
+        strength++;
+
+    if (/[0-9]/.test(value))
+        strength++;
+
+    if (/[^A-Za-z0-9]/.test(value))
+        strength++;
+
+
+    if (value.length === 0) {
+
+        strengthBar.style.width = "0%";
+
+        strengthText.textContent =
+            "Use at least 8 characters";
+
+    }
+
+    else if (strength <= 2) {
+
+        strengthBar.style.width = "35%";
+
+        strengthText.textContent =
+            "Weak password";
+
+    }
+
+    else if (strength === 3 || strength === 4) {
+
+        strengthBar.style.width = "70%";
+
+        strengthText.textContent =
+            "Medium password";
+
+    }
+
+    else {
+
+        strengthBar.style.width = "100%";
+
+        strengthText.textContent =
+            "Strong password";
+
+    }
+
+});
+
+
+/* ================= SHOW / HIDE PASSWORD ================= */
+
+function togglePassword(fieldId, button) {
+
+    const field = document.getElementById(fieldId);
+
+    if (field.type === "password") {
+
+        field.type = "text";
+
+        button.textContent = "🙈";
+
+    } else {
+
+        field.type = "password";
+
+        button.textContent = "👁";
+
+    }
+
+}
+
+
+/* ================= FORM VALIDATION ================= */
+
+document.getElementById("registerForm")
+.addEventListener("submit", function(event) {
+
+    let valid = true;
+
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const pass =
+        password.value;
+
+    const confirm =
+        confirmPassword.value;
+
+    const age =
+        Number(document.getElementById("age").value);
+
+    const height =
+        Number(document.getElementById("height").value);
+
+    const weight =
+        Number(document.getElementById("weight").value);
+
+    const terms =
+        document.getElementById("terms").checked;
+
+
+    /* CLEAR ERRORS */
+
+    document.querySelectorAll(".field-error")
+        .forEach(error => error.textContent = "");
+
+
+    /* NAME */
+
+    if (name.length < 2) {
+
+        document.getElementById("nameError")
+            .textContent =
+            "Please enter your full name.";
+
+        valid = false;
+
+    }
+
+
+    /* EMAIL */
+
+    const emailPattern =
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    if (!emailPattern.test(email)) {
+
+        document.getElementById("emailError")
+            .textContent =
+            "Please enter a valid email address.";
+
+        valid = false;
+
+    }
+
+
+    /* PASSWORD */
+
+    const strongPassword =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,128}$/;
+
+    if (!strongPassword.test(pass)) {
+
+        document.getElementById("passwordError")
+            .textContent =
+            "Password needs 8+ characters, uppercase, lowercase, number and special character.";
+
+        valid = false;
+
+    }
+
+
+    /* CONFIRM PASSWORD */
+
+    if (pass !== confirm) {
+
+        document.getElementById("confirmPasswordError")
+            .textContent =
+            "Passwords do not match.";
+
+        valid = false;
+
+    }
+
+
+    /* AGE */
+
+    if (age < 13 || age > 120) {
+
+        document.getElementById("ageError")
+            .textContent =
+            "Please enter a valid age.";
+
+        valid = false;
+
+    }
+
+
+    /* HEIGHT */
+
+    if (height < 50 || height > 250) {
+
+        document.getElementById("heightError")
+            .textContent =
+            "Please enter a valid height.";
+
+        valid = false;
+
+    }
+
+
+    /* WEIGHT */
+
+    if (weight < 20 || weight > 300) {
+
+        document.getElementById("weightError")
+            .textContent =
+            "Please enter a valid weight.";
+
+        valid = false;
+
+    }
+
+
+    /* TERMS */
+
+    if (!terms) {
+
+        document.getElementById("termsError")
+            .textContent =
+            "Please accept the Terms & Privacy Policy.";
+
+        valid = false;
+
+    }
+
+
+    if (!valid) {
+
+        event.preventDefault();
+
+        return false;
+
+    }
+
+
+    /* PREVENT DOUBLE SUBMIT */
+
+    const button =
+        document.getElementById("registerButton");
+
+    button.disabled = true;
+
+    button.textContent =
+        "Creating Account...";
+
+});
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('wheel', function () {
+        this.blur();
+    });
+});
+
+</script>
+
+</body>
+
+</html>
